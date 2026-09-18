@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="48" fill="#15803d" stroke="#fef08a" stroke-width="4"/>
+  <circle cx="50" cy="50" r="40" fill="#22c55e"/>
+  <!-- Telinga Kelinci -->
+  <ellipse cx="40" cy="30" rx="6" ry="16" fill="#fef3c7" stroke="#78350f" stroke-width="2"/>
+  <ellipse cx="60" cy="30" rx="6" ry="16" fill="#fef3c7" stroke="#78350f" stroke-width="2"/>
+  <ellipse cx="40" cy="30" rx="3" ry="10" fill="#f472b6"/>
+  <ellipse cx="60" cy="30" rx="3" ry="10" fill="#f472b6"/>
+  <!-- Kepala -->
+  <circle cx="50" cy="52" r="22" fill="#fef3c7" stroke="#78350f" stroke-width="2"/>
+  <circle cx="43" cy="48" r="3" fill="#1e293b"/>
+  <circle cx="57" cy="48" r="3" fill="#1e293b"/>
+  <polygon points="48,53 52,53 50,56" fill="#f43f5e"/>
+  <path d="M46,58 Q50,62 54,58" stroke="#78350f" stroke-width="2" fill="none"/>
+  <!-- Bintang Kecil -->
+  <polygon points="76,20 78,25 83,26 79,30 80,35 76,32 71,35 73,30 68,26 74,25" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
+</svg>

@@ -1,0 +1,27 @@
+{
+  "name": "E-Comic Interaktif: Kelinci & Kura-Kura | Literasi Sastra SD",
+  "short_name": "E-Comic SD",
+  "description": "Media Pembelajaran Literasi Sastra Digital Interaktif Siswa Sekolah Dasar. Membaca komik, berinteraksi dengan tokoh, dan mengukur literasi sastra secara menyenangkan.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fefce8",
+  "theme_color": "#15803d",
+  "categories": ["education", "books", "games"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

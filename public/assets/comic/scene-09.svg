@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700">
+  
+      
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7dd3fc" />
+      <stop offset="60%" stop-color="#bae6fd" />
+      <stop offset="100%" stop-color="#d9f99d" />
+    </linearGradient>
+    <linearGradient id="sunbeam" x1="0%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#fde047" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="treeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#15803d" />
+      <stop offset="100%" stop-color="#14532d" />
+    </linearGradient>
+    <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+    <linearGradient id="bridgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+    <filter id="comicShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="3" dy="4" stdDeviation="2" flood-color="#1e293b" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Langit & Cahaya Matahari -->
+  <rect width="1000" height="700" fill="url(#skyGrad)"/>
+  <polygon points="200,0 350,0 550,700 350,700" fill="url(#sunbeam)" />
+  <polygon points="550,0 700,0 850,700 650,700" fill="url(#sunbeam)" />
+
+  <!-- Dedaunan Latar Belakang -->
+  <circle cx="100" cy="180" r="180" fill="#166534" opacity="0.8"/>
+  <circle cx="280" cy="140" r="160" fill="#15803d" opacity="0.9"/>
+  <circle cx="500" cy="100" r="140" fill="#166534" opacity="0.8"/>
+  <circle cx="750" cy="120" r="170" fill="#15803d" opacity="0.9"/>
+  <circle cx="920" cy="160" r="190" fill="#14532d" opacity="0.8"/>
+
+  <!-- Batang Pohon Rimbun -->
+  <path d="M40,700 Q70,400 50,150 L90,150 Q110,400 130,700 Z" fill="#78350f"/>
+  <path d="M880,700 Q860,400 870,120 L920,120 Q930,400 950,700 Z" fill="#78350f"/>
+
+  <!-- Tanah & Rumput -->
+  <path d="M0,450 Q300,430 500,480 T1000,460 L1000,700 L0,700 Z" fill="#22c55e"/>
+  <path d="M0,490 Q250,470 480,510 T1000,490 L1000,700 L0,700 Z" fill="#16a34a"/>
+
+      <!-- Kelinci Bangun Kaget & Panik -->
+      
+    <g transform="translate(280, 400) scale(1.2)" filter="url(#comicShadow)">
+      <!-- Kaki Panjang Kelinci -->
+      <ellipse cx="-20" cy="90" rx="14" ry="24" fill="#c49a6c" stroke="#5c3d1e" stroke-width="4"/>
+      <ellipse cx="25" cy="90" rx="15" ry="24" fill="#c49a6c" stroke="#5c3d1e" stroke-width="4"/>
+      <ellipse cx="-20" cy="110" rx="18" ry="10" fill="#dfbe97" stroke="#5c3d1e" stroke-width="3"/>
+      <ellipse cx="25" cy="110" rx="18" ry="10" fill="#dfbe97" stroke="#5c3d1e" stroke-width="3"/>
+
+      <!-- Badan Kelinci -->
+      <ellipse cx="0" cy="40" rx="42" ry="55" fill="#c49a6c" stroke="#5c3d1e" stroke-width="4"/>
+      <!-- Perut Putih Lembut -->
+      <ellipse cx="0" cy="48" rx="26" ry="36" fill="#fef3c7" stroke="#92400e" stroke-width="2"/>
+
+      <!-- Telinga Panjang -->
+      
+          <path d="M-25,-40 Q-50,-120 -20,-130 Q5,-120 -5,-40 Z" fill="#c49a6c" stroke="#5c3d1e" stroke-width="4"/>
+          <path d="M-20,-45 Q-40,-115 -18,-122 Q-3,-115 -7,-45 Z" fill="#fbcfe8"/>
+          <path d="M15,-40 Q40,-120 15,-130 Q-5,-120 5,-40 Z" fill="#c49a6c" stroke="#5c3d1e" stroke-width="4"/>
+          <path d="M13,-45 Q32,-115 14,-122 Q2,-115 5,-45 Z" fill="#fbcfe8"/>
+        
+
+      <!-- Kepala Kelinci -->
+      <circle cx="0" cy="-20" r="42" fill="#c49a6c" stroke="#5c3d1e" stroke-width="4"/>
+      <ellipse cx="-18" cy="-10" rx="14" ry="12" fill="#fef3c7"/>
+      <ellipse cx="18" cy="-10" rx="14" ry="12" fill="#fef3c7"/>
+
+      <!-- Pipi Pink Merona -->
+      <ellipse cx="-26" cy="-15" rx="8" ry="5" fill="#f472b6" opacity="0.6"/>
+      <ellipse cx="26" cy="-15" rx="8" ry="5" fill="#f472b6" opacity="0.6"/>
+
+      <!-- Hidung & Mulut -->
+      <polygon points="-5,-22 5,-22 0,-16" fill="#f43f5e"/>
+      
+          <!-- Mata terbelalak panik -->
+          <circle cx="-16" cy="-28" r="9" fill="#ffffff" stroke="#372412" stroke-width="3"/>
+          <circle cx="16" cy="-28" r="9" fill="#ffffff" stroke="#372412" stroke-width="3"/>
+          <circle cx="-16" cy="-28" r="4" fill="#0f172a"/>
+          <circle cx="16" cy="-28" r="4" fill="#0f172a"/>
+          <!-- Mulut menganga kaget -->
+          <ellipse cx="0" cy="-6" rx="10" ry="14" fill="#991b1b" stroke="#372412" stroke-width="3"/>
+        
+
+      <!-- Tangan Kelinci -->
+      <path d="M-35,30 Q-50,45 -35,55" stroke="#c49a6c" stroke-width="16" stroke-linecap="round"/>
+      <path d="M35,30 Q50,45 35,55" stroke="#c49a6c" stroke-width="16" stroke-linecap="round"/>
+    </g>
+  
+      
+      <!-- Garis Finish di Kanan -->
+      <line x1="880" y1="360" x2="880" y2="680" stroke="#f8fafc" stroke-width="8"/>
+      <polygon points="880,380 940,410 880,440" fill="#ef4444"/>
+      
+      <!-- Kura-kura sudah sangat dekat finish! -->
+      
+    <g transform="translate(780, 540) scale(1.1)" filter="url(#comicShadow)">
+      <!-- Kaki Kura-Kura -->
+      <ellipse cx="-45" cy="40" rx="18" ry="12" fill="#577840" stroke="#2d401e" stroke-width="3"/>
+      <ellipse cx="45" cy="40" rx="18" ry="12" fill="#577840" stroke="#2d401e" stroke-width="3"/>
+      <ellipse cx="-15" cy="45" rx="16" ry="10" fill="#4d6b38" stroke="#2d401e" stroke-width="3"/>
+      <ellipse cx="25" cy="45" rx="16" ry="10" fill="#4d6b38" stroke="#2d401e" stroke-width="3"/>
+
+      <!-- Tempurung Kura-Kura -->
+      <ellipse cx="0" cy="10" rx="75" ry="50" fill="#607d3b" stroke="#283b1a" stroke-width="5"/>
+      <!-- Motif Pola Tempurung -->
+      <polygon points="0,-15 30,-5 30,20 0,30 -30,20 -30,-5" fill="#7a9a4d" stroke="#283b1a" stroke-width="3"/>
+      <polygon points="0,-15 45,-30 70,-10 30,-5" fill="#6d8c42" stroke="#283b1a" stroke-width="3"/>
+      <polygon points="0,-15 -45,-30 -70,-10 -30,-5" fill="#6d8c42" stroke="#283b1a" stroke-width="3"/>
+      <polygon points="0,30 35,45 65,30 30,20" fill="#6d8c42" stroke="#283b1a" stroke-width="3"/>
+      <polygon points="0,30 -35,45 -65,30 -30,20" fill="#6d8c42" stroke="#283b1a" stroke-width="3"/>
+
+      <!-- Leher & Kepala Kura-Kura -->
+      <path d="M-60,10 Q-80,0 -85,-20 Q-80,-40 -55,-35 Q-40,-15 -45,15 Z" fill="#7da054" stroke="#283b1a" stroke-width="4"/>
+      <!-- Mata Kura-Kura -->
+      <circle cx="-70" cy="-25" r="7" fill="#ffffff" stroke="#283b1a" stroke-width="2"/>
+      <circle cx="-71" cy="-25" r="4" fill="#1e293b"/>
+      <circle cx="-73" cy="-27" r="1.5" fill="#ffffff"/>
+      <!-- Garis Mulut & Ekspresi -->
+      <path d="M-82,-15 Q-72,-10 -62,-15" stroke="#283b1a" stroke-width="3" fill="none"/>
+    </g>
+  
+
+      
+    <g filter="url(#comicShadow)">
+      <!-- Ekor Balon Ucapan -->
+      <polygon points="455,175 485,175 280,280" fill="#ffffff" stroke="#1e293b" stroke-width="4"/>
+      <!-- Badan Balon Ucapan -->
+      <rect x="160" y="80" width="620" height="100" rx="24" fill="#ffffff" stroke="#1e293b" stroke-width="4"/>
+      <polygon points="458,174 482,174 280,278" fill="#ffffff"/>
+      
+      <!-- Label Pembicara -->
+      <rect x="180" y="66" width="167" height="26" rx="8" fill="#f59e0b" stroke="#1e293b" stroke-width="2"/>
+      <text x="192" y="84" font-family="'Fredoka', 'Nunito', sans-serif" font-weight="bold" font-size="14" fill="#ffffff">Kelinci Panik</text>
+      
+      <!-- Teks Dialog -->
+      <text x="470" y="134" font-family="'Fredoka', 'Nunito', 'Comic Sans MS', sans-serif" font-size="18" font-weight="600" fill="#0f172a" text-anchor="middle" dominant-baseline="middle">
+        "Gawaaat! Matahari sudah sore! Kura-kura sudah dekat finish?!"
+      </text>
+    </g>
+  
+      
+    <g filter="url(#comicShadow)">
+      <rect x="40" y="620" width="480" height="50" rx="14" fill="#fef3c7" stroke="#92400e" stroke-width="3"/>
+      <text x="60" y="650" font-family="'Nunito', sans-serif" font-size="15" font-weight="bold" fill="#78350f" dominant-baseline="middle">
+        📖 Kelinci panik bangun saat kura-kura hampir sampai!
+      </text>
+    </g>
+  
+    
+</svg>
