@@ -24,6 +24,10 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
         return '🐢';
       case 'monkey':
         return '🐒';
+      case 'teacher':
+        return '🧕';
+      case 'student':
+        return '👧';
       default:
         return '📖';
     }
@@ -37,6 +41,10 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
         return 'bg-emerald-600 text-white border-emerald-700';
       case 'monkey':
         return 'bg-purple-600 text-white border-purple-700';
+      case 'teacher':
+        return 'bg-teal-600 text-white border-teal-700';
+      case 'student':
+        return 'bg-indigo-600 text-white border-indigo-700';
       default:
         return 'bg-blue-600 text-white border-blue-700';
     }

@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { STORY_SCENES } from '../data/story';
-import type { StoryScene } from '../data/story';
+import { ALL_COMIC_STORIES, COMIC_1 } from '../data/story';
+import type { StoryScene, ComicStory } from '../data/story';
 import type { LiteracyIndicatorType } from '../data/indicators';
 import { ADVENTURE_BADGES } from '../data/badges';
 import type { Badge } from '../data/badges';
 import { preloadImage } from '../utils/preloadImage';
 
-const STORAGE_KEY = 'e_comic_sd_petualangan_v1';
+const STORAGE_KEY = 'e_comic_sd_literasi_v2';
 
 export interface AnswerRecord {
   checkpointId: string;
@@ -16,7 +16,7 @@ export interface AnswerRecord {
   pointsEarned: number;
 }
 
-export interface StoredProgress {
+export interface StoryProgressData {
   currentSceneId: number;
   answers: Record<string, AnswerRecord>;
   unlockedBadgeIds: string[];
@@ -25,7 +25,12 @@ export interface StoredProgress {
   completed: boolean;
 }
 
-const defaultProgress: StoredProgress = {
+export interface AppStoredState {
+  activeStoryId: string;
+  stories: Record<string, StoryProgressData>;
+}
+
+const defaultStoryProgress: StoryProgressData = {
   currentSceneId: 1,
   answers: {},
   unlockedBadgeIds: [],
@@ -34,45 +39,72 @@ const defaultProgress: StoredProgress = {
   completed: false
 };
 
+const defaultAppState: AppStoredState = {
+  activeStoryId: 'comic-1',
+  stories: {
+    'comic-1': { ...defaultStoryProgress },
+    'comic-2': { ...defaultStoryProgress }
+  }
+};
+
 export function useStoryProgress() {
-  const [progress, setProgress] = useState<StoredProgress>(() => {
-    if (typeof window === 'undefined') return defaultProgress;
+  const [appState, setAppState] = useState<AppStoredState>(() => {
+    if (typeof window === 'undefined') return defaultAppState;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved) as Partial<AppStoredState>;
+        return {
+          activeStoryId: parsed.activeStoryId || 'comic-1',
+          stories: {
+            'comic-1': parsed.stories?.['comic-1'] || { ...defaultStoryProgress },
+            'comic-2': parsed.stories?.['comic-2'] || { ...defaultStoryProgress }
+          }
+        };
       }
     } catch (e) {
       console.warn('Gagal membaca progress dari localStorage:', e);
     }
-    return defaultProgress;
+    return defaultAppState;
   });
 
-  // Sinkronisasi ke localStorage setiap kali progress berubah
+  // Sinkronisasi ke localStorage
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
     } catch (e) {
       console.warn('Gagal menyimpan progress ke localStorage:', e);
     }
-  }, [progress]);
+  }, [appState]);
 
-  // Dapatkan scene saat ini
-  const currentSceneIndex = STORY_SCENES.findIndex((s) => s.id === progress.currentSceneId);
+  const activeStoryId = appState.activeStoryId;
+  const currentStory: ComicStory = ALL_COMIC_STORIES[activeStoryId] || COMIC_1;
+  const storyProgress = appState.stories[activeStoryId] || defaultStoryProgress;
+
+  // Scene aktif
+  const currentSceneIndex = currentStory.scenes.findIndex((s) => s.id === storyProgress.currentSceneId);
   const currentScene: StoryScene =
-    currentSceneIndex !== -1 ? STORY_SCENES[currentSceneIndex] : STORY_SCENES[0];
+    currentSceneIndex !== -1 ? currentStory.scenes[currentSceneIndex] : currentStory.scenes[0];
 
-  // Preload hanya scene berikutnya untuk mengoptimalkan performa:
-  // - gambar utama (webp) + fallback (svg) agar perpindahan scene terasa instant.
+  // Preload scene berikutnya
   useEffect(() => {
-    const nextScene = STORY_SCENES[currentSceneIndex + 1];
+    const nextScene = currentStory.scenes[currentSceneIndex + 1];
     if (nextScene && nextScene.image) {
       preloadImage(nextScene.image);
-      preloadImage(nextScene.image.replace(/\.webp$/i, '.svg'));
+      preloadImage(nextScene.image.replace(/\.webp$/i, '.jpg'));
     }
-  }, [currentSceneIndex]);
+  }, [currentStory.scenes, currentSceneIndex]);
 
-  // Menjawab checkpoint literasi
+  // Ganti cerita komik (Komik 1 <-> Komik 2)
+  const selectStory = useCallback((storyId: string) => {
+    if (!ALL_COMIC_STORIES[storyId]) return;
+    setAppState((prev) => ({
+      ...prev,
+      activeStoryId: storyId
+    }));
+  }, []);
+
+  // Menjawab checkpoint
   const submitAnswer = useCallback(
     (
       checkpointId: string,
@@ -81,10 +113,13 @@ export function useStoryProgress() {
       indicator: LiteracyIndicatorType,
       points: number
     ) => {
-      setProgress((prev) => {
+      setAppState((prev) => {
+        const curStoryId = prev.activeStoryId;
+        const currentData = prev.stories[curStoryId] || { ...defaultStoryProgress };
+
         const pointsToAdd = isCorrect ? points : 0;
         const newAnswers = {
-          ...prev.answers,
+          ...currentData.answers,
           [checkpointId]: {
             checkpointId,
             selectedOptionId: optionId,
@@ -94,14 +129,12 @@ export function useStoryProgress() {
           }
         };
 
-        // Hitung total score baru
         const newTotalScore = Object.values(newAnswers).reduce(
           (sum, ans) => sum + ans.pointsEarned,
           0
         );
 
-        // Cek lencana baru yang terbuka
-        const newBadgeIds = [...prev.unlockedBadgeIds];
+        const newBadgeIds = [...currentData.unlockedBadgeIds];
         if (isCorrect) {
           if (indicator === 'tokoh' && !newBadgeIds.includes('pembaca_teliti')) {
             newBadgeIds.push('pembaca_teliti');
@@ -118,91 +151,144 @@ export function useStoryProgress() {
           if (indicator === 'pesanMoral' && !newBadgeIds.includes('pencari_pesan_moral')) {
             newBadgeIds.push('pencari_pesan_moral');
           }
+          if (indicator === 'kesimpulan' && !newBadgeIds.includes('kesimpulan_tajam')) {
+            newBadgeIds.push('kesimpulan_tajam');
+          }
         }
 
         return {
           ...prev,
-          answers: newAnswers,
-          totalScore: newTotalScore,
-          unlockedBadgeIds: newBadgeIds
+          stories: {
+            ...prev.stories,
+            [curStoryId]: {
+              ...currentData,
+              answers: newAnswers,
+              totalScore: newTotalScore,
+              unlockedBadgeIds: newBadgeIds
+            }
+          }
         };
       });
     },
     []
   );
 
-  // Menandai hotspot yang sudah ditekan
+  // Menemukan hotspot
   const discoverHotspot = useCallback((hotspotId: string) => {
-    setProgress((prev) => {
-      if (prev.discoveredHotspotIds.includes(hotspotId)) return prev;
+    setAppState((prev) => {
+      const curStoryId = prev.activeStoryId;
+      const currentData = prev.stories[curStoryId] || { ...defaultStoryProgress };
+
+      if (currentData.discoveredHotspotIds.includes(hotspotId)) return prev;
+
       return {
         ...prev,
-        discoveredHotspotIds: [...prev.discoveredHotspotIds, hotspotId]
+        stories: {
+          ...prev.stories,
+          [curStoryId]: {
+            ...currentData,
+            discoveredHotspotIds: [...currentData.discoveredHotspotIds, hotspotId]
+          }
+        }
       };
     });
   }, []);
 
-  // Pindah ke scene berikutnya
+  // Lanjut scene
   const nextScene = useCallback(() => {
-    if (currentSceneIndex < STORY_SCENES.length - 1) {
-      const nextId = STORY_SCENES[currentSceneIndex + 1].id;
-      setProgress((prev) => ({
-        ...prev,
-        currentSceneId: nextId
-      }));
-    } else {
-      // Petualangan tamat
-      setProgress((prev) => {
-        const badges = [...prev.unlockedBadgeIds];
-        if (!badges.includes('penjelajah_rimba')) {
-          badges.push('penjelajah_rimba');
+    setAppState((prev) => {
+      const curStoryId = prev.activeStoryId;
+      const story = ALL_COMIC_STORIES[curStoryId] || COMIC_1;
+      const curData = prev.stories[curStoryId] || { ...defaultStoryProgress };
+      const curIdx = story.scenes.findIndex((s) => s.id === curData.currentSceneId);
+
+      if (curIdx < story.scenes.length - 1) {
+        return {
+          ...prev,
+          stories: {
+            ...prev.stories,
+            [curStoryId]: {
+              ...curData,
+              currentSceneId: story.scenes[curIdx + 1].id
+            }
+          }
+        };
+      } else {
+        // Tamat cerita
+        const badges = [...curData.unlockedBadgeIds];
+        const finishBadgeId = curStoryId === 'comic-1' ? 'penjelajah_rimba' : 'pendekar_timun_mas';
+        if (!badges.includes(finishBadgeId)) {
+          badges.push(finishBadgeId);
         }
         return {
           ...prev,
-          completed: true,
-          unlockedBadgeIds: badges
+          stories: {
+            ...prev.stories,
+            [curStoryId]: {
+              ...curData,
+              completed: true,
+              unlockedBadgeIds: badges
+            }
+          }
         };
-      });
-    }
-  }, [currentSceneIndex]);
+      }
+    });
+  }, []);
 
-  // Kembali ke scene sebelumnya
+  // Kembali scene
   const prevScene = useCallback(() => {
-    if (currentSceneIndex > 0) {
-      const prevId = STORY_SCENES[currentSceneIndex - 1].id;
-      setProgress((prev) => ({
-        ...prev,
-        currentSceneId: prevId
-      }));
-    }
-  }, [currentSceneIndex]);
+    setAppState((prev) => {
+      const curStoryId = prev.activeStoryId;
+      const story = ALL_COMIC_STORIES[curStoryId] || COMIC_1;
+      const curData = prev.stories[curStoryId] || { ...defaultStoryProgress };
+      const curIdx = story.scenes.findIndex((s) => s.id === curData.currentSceneId);
 
-  // Lompat ke scene tertentu
+      if (curIdx > 0) {
+        return {
+          ...prev,
+          stories: {
+            ...prev.stories,
+            [curStoryId]: {
+              ...curData,
+              currentSceneId: story.scenes[curIdx - 1].id
+            }
+          }
+        };
+      }
+      return prev;
+    });
+  }, []);
+
+  // Lompat ke scene
   const goToScene = useCallback((sceneId: number) => {
-    setProgress((prev) => ({
+    setAppState((prev) => {
+      const curStoryId = prev.activeStoryId;
+      const curData = prev.stories[curStoryId] || { ...defaultStoryProgress };
+      return {
+        ...prev,
+        stories: {
+          ...prev.stories,
+          [curStoryId]: {
+            ...curData,
+            currentSceneId: sceneId
+          }
+        }
+      };
+    });
+  }, []);
+
+  // Reset cerita aktif
+  const resetCurrentStory = useCallback(() => {
+    setAppState((prev) => ({
       ...prev,
-      currentSceneId: sceneId
+      stories: {
+        ...prev.stories,
+        [prev.activeStoryId]: { ...defaultStoryProgress }
+      }
     }));
   }, []);
 
-  // Mulai ulang petualangan
-  const resetProgress = useCallback(() => {
-    setProgress({
-      currentSceneId: 1,
-      answers: {},
-      unlockedBadgeIds: [],
-      discoveredHotspotIds: [],
-      totalScore: 0,
-      completed: false
-    });
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (e) {
-      console.warn(e);
-    }
-  }, []);
-
-  // Hitung skor per indikator literasi sastra
+  // Hitung statistik indikator untuk cerita aktif
   const indicatorStats: Record<
     LiteracyIndicatorType,
     { earned: number; total: number; percentage: number; questionCount: number }
@@ -215,13 +301,13 @@ export function useStoryProgress() {
     kesimpulan: { earned: 0, total: 0, percentage: 0, questionCount: 0 }
   };
 
-  STORY_SCENES.forEach((scene) => {
+  currentStory.scenes.forEach((scene) => {
     if (scene.checkpoint) {
       const ind = scene.checkpoint.indicator;
       indicatorStats[ind].total += scene.checkpoint.points;
       indicatorStats[ind].questionCount += 1;
 
-      const userAns = progress.answers[scene.checkpoint.id];
+      const userAns = storyProgress.answers[scene.checkpoint.id];
       if (userAns) {
         indicatorStats[ind].earned += userAns.pointsEarned;
       }
@@ -234,25 +320,29 @@ export function useStoryProgress() {
   });
 
   const unlockedBadges: Badge[] = ADVENTURE_BADGES.filter((b) =>
-    progress.unlockedBadgeIds.includes(b.id)
+    storyProgress.unlockedBadgeIds.includes(b.id)
   );
 
   return {
+    currentStory,
+    allStories: ALL_COMIC_STORIES,
+    activeStoryId,
     currentScene,
     currentSceneIndex,
-    totalScenes: STORY_SCENES.length,
-    progress,
-    answers: progress.answers,
-    totalScore: progress.totalScore,
-    isCompleted: progress.completed,
+    totalScenes: currentStory.scenes.length,
+    progress: storyProgress,
+    answers: storyProgress.answers,
+    totalScore: storyProgress.totalScore,
+    isCompleted: storyProgress.completed,
     indicatorStats,
     unlockedBadges,
     allBadges: ADVENTURE_BADGES,
+    selectStory,
     nextScene,
     prevScene,
     goToScene,
     submitAnswer,
     discoverHotspot,
-    resetProgress
+    resetProgress: resetCurrentStory
   };
 }

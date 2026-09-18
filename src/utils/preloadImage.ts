@@ -1,9 +1,8 @@
 /**
- * Util pemuatan gambar komik yang hemat performa.
+ * Util pemuatan gambar komik yang hemat performa & adaptif.
  *
  * - preloadImage: mempreload gambar berikutnya ke browser cache (tanpa render).
- * - resolveValidImage: memverifikasi sebuah URL benar-benar mengirim file gambar
- *   (bukan halaman HTML hasil SPA-fallback), lalu mengembalikan URL atau string kosong.
+ * - resolveComicImage: mencoba beberapa kandidat format (webp -> jpg -> png -> svg).
  */
 
 export function preloadImage(src: string): void {
@@ -15,15 +14,15 @@ export function preloadImage(src: string): void {
 
 /**
  * Cek bahwa URL mengembalikan konten gambar yang valid.
- * Menggunakan GET agar sesuai dengan mekanisme cache-browser.
  */
 export async function resolveValidImage(src: string): Promise<string | null> {
   if (!src) return null;
   try {
-    const res = await fetch(src, { method: 'GET' });
-    if (!res.ok) return null;
+    const res = await fetch(src, { method: 'HEAD' }).catch(() => fetch(src, { method: 'GET' }));
+    if (!res || !res.ok) return null;
     const contentType = res.headers.get('content-type') || '';
-    if (!contentType.startsWith('image/')) return null;
+    // Jika server mengembalikan HTML (SPA fallback 404), tolak
+    if (contentType.includes('text/html')) return null;
     return src;
   } catch {
     return null;
@@ -31,14 +30,20 @@ export async function resolveValidImage(src: string): Promise<string | null> {
 }
 
 /**
- * Lakukan fallback webp -> svg secara andal di semua jenis server:
- * 1. Coba URL utama (mis. scene-01.webp)
- * 2. Jika tidak valid (404 / HTML-fallback / gagal), gunakan URL cadangan (mis. scene-01.svg)
- * 3. Jika keduanya gagal, kembalikan string kosong agar UI menampilkan placeholder.
+ * Lakukan fallback bertingkat:
+ * webp -> jpg -> png -> svg
  */
-export async function resolveComicImage(primary: string, fallback: string): Promise<string> {
-  const primaryOk = await resolveValidImage(primary);
-  if (primaryOk) return primaryOk;
-  const fallbackOk = await resolveValidImage(fallback);
-  return fallbackOk ?? '';
+export async function resolveComicImage(
+  primary: string,
+  candidates: string[] = []
+): Promise<string> {
+  const allCandidates = [primary, ...candidates].filter(Boolean);
+
+  for (const candidate of allCandidates) {
+    const ok = await resolveValidImage(candidate);
+    if (ok) return ok;
+  }
+
+  // Jika gagal cek fetch (misal offline/CORS), gunakan primary langsung
+  return primary;
 }
