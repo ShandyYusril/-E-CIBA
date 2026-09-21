@@ -1,14 +1,11 @@
 import React from 'react';
-import { ArrowLeft, ArrowRight, HelpCircle, Volume2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Volume2 } from 'lucide-react';
 
 interface NavigationControlsProps {
   onPrev: () => void;
   onNext: () => void;
   hasPrev: boolean;
   hasNext: boolean;
-  hasCheckpoint: boolean;
-  isCheckpointAnswered: boolean;
-  onOpenCheckpoint: () => void;
   onPlayNarration: () => void;
   isPlayingNarration: boolean;
   className?: string;
@@ -19,9 +16,6 @@ export const NavigationControls: React.FC<NavigationControlsProps> = ({
   onNext,
   hasPrev,
   hasNext,
-  hasCheckpoint,
-  isCheckpointAnswered,
-  onOpenCheckpoint,
   onPlayNarration,
   isPlayingNarration,
   className = ''
@@ -36,7 +30,7 @@ export const NavigationControls: React.FC<NavigationControlsProps> = ({
         disabled={!hasPrev}
         className={`px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl flex items-center gap-2 text-sm sm:text-base font-bold shadow-lg transition-all ${
           hasPrev
-            ? 'btn-game-amber'
+            ? 'bg-slate-700 text-white border-b-4 border-slate-950 hover:bg-slate-600'
             : 'bg-slate-300 text-slate-400 border-b-4 border-slate-400 cursor-not-allowed opacity-50'
         }`}
         aria-label="Halaman Sebelumnya"
@@ -50,37 +44,25 @@ export const NavigationControls: React.FC<NavigationControlsProps> = ({
         onClick={onPlayNarration}
         className={`px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-2xl flex items-center gap-2 text-sm sm:text-base font-bold shadow-md transition-all ${
           isPlayingNarration
-            ? 'bg-amber-300 text-amber-950 border-b-4 border-amber-600 animate-pulse'
-            : 'bg-white text-emerald-800 border-2 border-emerald-300 hover:bg-emerald-50 border-b-4 border-b-emerald-600'
+            ? 'bg-emerald-400 text-emerald-950 border-b-4 border-emerald-700 animate-pulse'
+            : 'bg-slate-800 text-white/80 border border-white/10 hover:bg-slate-700 border-b-4 border-b-slate-950'
         }`}
         title="Dengarkan Cerita"
       >
-        <Volume2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-700" />
+        <Volume2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
         <span className="hidden sm:inline">
           {isPlayingNarration ? 'Bercerita...' : 'Suara Cerita'}
         </span>
       </button>
 
-      {/* Tombol Kanan: Jika ada checkpoint yang belum dijawab, tampilkan "Jawab Tantangan", jika sudah atau tidak ada tampilkan "Lanjut" */}
-      {hasCheckpoint && !isCheckpointAnswered ? (
-        <button
-          onClick={onOpenCheckpoint}
-          className="btn-game-purple px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl flex items-center gap-2 text-sm sm:text-base font-bold shadow-lg animate-pulse"
-          aria-label="Buka Tantangan Literasi"
-        >
-          <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
-          <span>Tantangan Cerita 🎯</span>
-        </button>
-      ) : (
-        <button
+      <button
           onClick={onNext}
           className="btn-game-primary px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl flex items-center gap-2 text-sm sm:text-base font-bold shadow-lg"
           aria-label={hasNext ? 'Halaman Selanjutnya' : 'Selesaikan Petualangan'}
         >
           <span>{hasNext ? 'Lanjut' : 'Lihat Hasil 🌟'}</span>
           <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
-        </button>
-      )}
+      </button>
     </div>
   );
 };

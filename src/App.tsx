@@ -14,6 +14,7 @@ export function App() {
   const [screenState, setScreenState] = useState<ScreenState>('loading');
 
   const {
+    currentStory,
     currentScene,
     currentSceneIndex,
     totalScenes,
@@ -96,9 +97,10 @@ export function App() {
       {screenState === 'story' && (
         <StoryViewer
           currentScene={currentScene}
-          currentSceneIndex={currentSceneIndex}
-          totalScenes={totalScenes}
-          totalScore={totalScore}
+           currentSceneIndex={currentSceneIndex}
+           totalScenes={totalScenes}
+           scenes={currentStory.scenes}
+           totalScore={totalScore}
           answers={answers}
           discoveredHotspots={progress.discoveredHotspotIds}
           isMuted={isMuted}

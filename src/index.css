@@ -92,6 +92,30 @@
   animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+/* Paper-like turn used when moving between comic pages. */
+@keyframes pageFlipIn {
+  0% {
+    opacity: 0;
+    transform: perspective(1400px) rotateY(-72deg) translateX(28px);
+    transform-origin: left center;
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1400px) rotateY(0deg) translateX(0);
+    transform-origin: left center;
+  }
+}
+
+.animate-page-flip {
+  animation: pageFlipIn 520ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-page-flip { animation: none; }
+}
+
 /* Tombol 3D Taktil Ramah Anak (Besar, Nyaman Ditekan di HP/Tablet) */
 .btn-game-primary {
   background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);

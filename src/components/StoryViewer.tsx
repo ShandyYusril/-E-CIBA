@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Star, Volume2 } from 'lucide-react';
-import { STORY_SCENES } from '../data/story';
-import type { StoryScene, Hotspot, LiteracyOption } from '../data/story';
+import type { StoryScene, Hotspot } from '../data/story';
 import { ComicScene } from './ComicScene';
-import { DialogueBox } from './DialogueBox';
 import { NavigationControls } from './NavigationControls';
 import { ProgressIndicator } from './ProgressIndicator';
-import { LiteracyCheckpoint } from './LiteracyCheckpoint';
-import { FeedbackModal } from './FeedbackModal';
+import { FinalQuiz } from './FinalQuiz';
 import { FullscreenButton } from './FullscreenButton';
 import { soundEffects } from '../utils/soundEffects';
-import { fireRewardConfetti } from '../utils/confetti';
 
 interface StoryViewerProps {
   currentScene: StoryScene;
   currentSceneIndex: number;
   totalScenes: number;
+  scenes: StoryScene[];
   totalScore: number;
   answers: Record<string, { selectedOptionId: string; isCorrect: boolean; pointsEarned: number }>;
   discoveredHotspots: string[];
@@ -44,6 +41,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
   currentScene,
   currentSceneIndex,
   totalScenes,
+  scenes,
   totalScore,
   answers,
   discoveredHotspots,
@@ -61,25 +59,15 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
   onDiscoverHotspot,
   onHomeClick
 }) => {
-  const [isCheckpointOpen, setIsCheckpointOpen] = useState(false);
-  const [activeFeedback, setActiveFeedback] = useState<{
-    option: LiteracyOption;
-    points: number;
-  } | null>(null);
+  const [isFinalQuizOpen, setIsFinalQuizOpen] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
-
-  // Checkpoint saat ini jika ada
-  const currentCheckpoint = currentScene.checkpoint;
-  const currentAnswer = currentCheckpoint ? answers[currentCheckpoint.id] : undefined;
-  const isCheckpointAnswered = !!currentAnswer;
 
   // Reset modal UI saat berpindah scene (pola resmi React: menyesuaikan state
   // ketika prop berubah, tanpa setState di dalam effect)
   const [prevSceneId, setPrevSceneId] = useState(currentScene.id);
   if (prevSceneId !== currentScene.id) {
     setPrevSceneId(currentScene.id);
-    setIsCheckpointOpen(false);
-    setActiveFeedback(null);
+    setIsFinalQuizOpen(false);
   }
 
   // Hentikan narasi audio saat scene berubah (side-effect murni)
@@ -90,14 +78,13 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
   // Navigasi Keyboard (Panah Kanan, Panah Kiri, Spasi untuk Audio)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Jangan jalankan shortcut jika sedang membuka modal checkpoint / feedback
-      if (isCheckpointOpen || activeFeedback || showExitConfirm) return;
+      if (isFinalQuizOpen || showExitConfirm) return;
 
       if (e.key === 'ArrowRight') {
         e.preventDefault();
         soundEffects.pop();
-        if (currentCheckpoint && !isCheckpointAnswered) {
-          setIsCheckpointOpen(true);
+        if (currentSceneIndex === totalScenes - 1) {
+          setIsFinalQuizOpen(true);
         } else {
           onNextScene();
         }
@@ -117,42 +104,16 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
-    isCheckpointOpen,
-    activeFeedback,
+    isFinalQuizOpen,
     showExitConfirm,
-    currentCheckpoint,
-    isCheckpointAnswered,
     currentSceneIndex,
+    totalScenes,
     currentScene,
     onNextScene,
     onPrevScene,
     onPlayNarration
   ]);
 
-  // Handler saat siswa memilih jawaban di checkpoint
-  const handleSelectOption = (option: LiteracyOption) => {
-    if (!currentCheckpoint) return;
-
-    if (option.isCorrect) {
-      soundEffects.correct();
-      fireRewardConfetti();
-    } else {
-      soundEffects.tryAgain();
-    }
-
-    onSubmitAnswer(
-      currentCheckpoint.id,
-      option.id,
-      option.isCorrect,
-      currentCheckpoint.indicator,
-      currentCheckpoint.points
-    );
-
-    setActiveFeedback({
-      option,
-      points: currentCheckpoint.points
-    });
-  };
 
   // Handler saat hotspot di-tap
   const handleTriggerHotspot = (hotspot: Hotspot) => {
@@ -184,13 +145,13 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
             title="Keluar ke Menu Utama"
             aria-label="Menu Utama"
           >
-            <Home className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+            <Home className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
             <span className="hidden md:inline">Menu</span>
           </button>
 
           {/* Indikator Poin Bintang Siswa */}
-          <div className="flex items-center gap-1.5 bg-amber-400/20 border-2 border-amber-400/60 px-3 py-1.5 rounded-2xl text-amber-300 font-extrabold text-xs sm:text-sm shadow-inner">
-            <Star className="w-4 h-4 fill-amber-400 text-amber-400 animate-pulse" />
+          <div className="flex items-center gap-1.5 bg-emerald-400/10 border border-emerald-400/30 px-3 py-1.5 rounded-2xl text-emerald-300 font-extrabold text-xs sm:text-sm shadow-inner">
+            <Star className="w-4 h-4 fill-emerald-400 text-emerald-400 animate-pulse" />
             <span>{totalScore} Poin</span>
           </div>
         </div>
@@ -203,7 +164,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
             acc[k] = answers[k].isCorrect;
             return acc;
           }, {} as Record<string, boolean>)}
-          scenes={STORY_SCENES}
+          scenes={scenes}
           onSelectScene={onGoToScene}
         />
 
@@ -215,7 +176,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
             title={isMuted ? 'Nyalakan Efek Suara' : 'Matikan Efek Suara'}
             aria-label="Pengaturan Suara"
           >
-            <Volume2 className={`w-4 h-4 sm:w-5 sm:h-5 ${isMuted ? 'text-red-400' : 'text-emerald-400'}`} />
+            <Volume2 className={`w-4 h-4 sm:w-5 sm:h-5 ${isMuted ? 'text-slate-500' : 'text-emerald-400'}`} />
           </button>
 
           <FullscreenButton isFullscreen={isFullscreen} onToggle={onToggleFullscreen} />
@@ -234,14 +195,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
 
       {/* 3. FOOTER STORY MODE: BALON DIALOG & KONTROL NAVIGASI */}
       <footer className="relative z-30 w-full bg-slate-900/95 backdrop-blur-md border-t-2 border-emerald-800/60 py-2 sm:py-3 px-2 sm:px-4 space-y-2">
-        {/* Balon Dialog & Narasi Komik */}
-        <DialogueBox
-          scene={currentScene}
-          onSpeak={handlePlayCurrentNarration}
-          isPlaying={isPlayingNarration}
-        />
-
-        {/* Kontrol Navigasi Besar (Sebelumnya, Audio, Lanjut / Tantangan) */}
+        {/* Navigasi halaman. Kuis dibuka setelah halaman terakhir. */}
         <NavigationControls
           onPrev={() => {
             soundEffects.pop();
@@ -249,60 +203,35 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
           }}
           onNext={() => {
             soundEffects.pop();
-            onNextScene();
+            if (currentSceneIndex === totalScenes - 1) {
+              setIsFinalQuizOpen(true);
+            } else {
+              onNextScene();
+            }
           }}
           hasPrev={currentSceneIndex > 0}
           hasNext={currentSceneIndex < totalScenes - 1}
-          hasCheckpoint={!!currentCheckpoint}
-          isCheckpointAnswered={isCheckpointAnswered}
-          onOpenCheckpoint={() => {
-            soundEffects.pop();
-            setIsCheckpointOpen(true);
-          }}
           onPlayNarration={handlePlayCurrentNarration}
           isPlayingNarration={isPlayingNarration}
         />
       </footer>
 
-      {/* MODAL CHECKPOINT LITERASI SASTRA */}
-      {isCheckpointOpen && currentCheckpoint && (
-        <LiteracyCheckpoint
-          checkpoint={currentCheckpoint}
-          onSelectOption={handleSelectOption}
-          previousAnswer={currentAnswer}
-          onClose={() => setIsCheckpointOpen(false)}
-        />
-      )}
-
-      {/* MODAL FEEDBACK GAME-LIKE RAMAH ANAK */}
-      {activeFeedback && (
-        <FeedbackModal
-          option={activeFeedback.option}
-          pointsEarned={activeFeedback.points}
-          onContinue={() => {
-            setActiveFeedback(null);
-            setIsCheckpointOpen(false);
-            // Otomatis lanjut ke scene berikutnya jika benar!
-            if (activeFeedback.option.isCorrect) {
-              onNextScene();
-            }
+      {isFinalQuizOpen && (
+        <FinalQuiz
+          checkpoints={scenes.flatMap((scene) => (scene.checkpoint ? [scene.checkpoint] : []))}
+          onSubmitAnswer={onSubmitAnswer}
+          onFinish={() => {
+            setIsFinalQuizOpen(false);
+            onNextScene();
           }}
-          onTryAgain={
-            !activeFeedback.option.isCorrect
-              ? () => {
-                  setActiveFeedback(null);
-                  setIsCheckpointOpen(true);
-                }
-              : undefined
-          }
         />
       )}
 
       {/* MODAL KONFIRMASI KELUAR (Agar anak tidak sengaja memencet) */}
       {showExitConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-pop-in">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full border-4 border-amber-400 shadow-2xl text-center">
-            <div className="text-4xl mb-2">🛑</div>
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full border border-slate-200 shadow-2xl text-center">
+            <div className="text-4xl mb-2 text-slate-500">?</div>
             <h4 className="text-xl font-black text-slate-800 mb-2">Ingin Kembali ke Menu?</h4>
             <p className="text-sm font-semibold text-slate-600 mb-6">
               Kemajuan membacamu tetap tersimpan secara otomatis. Kamu bisa melanjutkannya kapan saja!

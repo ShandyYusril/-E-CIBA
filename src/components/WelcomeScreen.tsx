@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { Play, HelpCircle, RotateCcw, Sparkles, BookOpen } from 'lucide-react';
-import { STORY_METADATA } from '../data/story';
-import { GuideModal } from './GuideModal';
+import { Play, RotateCcw, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
 import { FullscreenButton } from './FullscreenButton';
 
 interface WelcomeScreenProps {
@@ -22,121 +20,144 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onToggleFullscreen
 }) => {
   const [showGuide, setShowGuide] = useState(false);
-  const [selectedChar, setSelectedChar] = useState<any | null>(null);
 
   return (
-    <div className="relative min-h-full w-full bg-gradient-to-b from-sky-300 via-emerald-100 to-green-300 p-4 sm:p-8 flex flex-col justify-between select-none overflow-y-auto">
-      {/* Tombol Kontrol Atas (Fullscreen & Panduan) */}
-      <div className="w-full max-w-5xl mx-auto flex items-center justify-between z-20">
-        <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3.5 py-1.5 rounded-full border-2 border-emerald-300 shadow-sm">
-          <BookOpen className="w-4 h-4 text-emerald-700" />
-          <span className="text-xs sm:text-sm font-extrabold text-emerald-900">
-            Komik Literasi Digital SD
-          </span>
-        </div>
+    <div className="relative min-h-full w-full bg-[#0f1923] flex flex-col select-none overflow-hidden">
+      {/* Background subtle pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+        backgroundSize: '40px 40px'
+      }} />
+      
+      {/* Soft gradient accent */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-emerald-500/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowGuide(true)}
-            className="p-2.5 sm:px-4 sm:py-2.5 rounded-2xl bg-white/90 hover:bg-white text-amber-900 shadow-md border-2 border-amber-300 flex items-center gap-2 text-xs sm:text-sm font-bold transition-transform active:scale-95"
-            aria-label="Petunjuk Membaca"
-          >
-            <HelpCircle className="w-5 h-5 text-amber-600" />
-            <span className="hidden sm:inline">Petunjuk Membaca</span>
-          </button>
-
-          <FullscreenButton isFullscreen={isFullscreen} onToggle={onToggleFullscreen} />
-        </div>
-      </div>
-
-      {/* Konten Utama Layar Pembuka */}
-      <div className="w-full max-w-4xl mx-auto my-auto text-center z-10 py-6">
-        {/* Badge Judul */}
-        <div className="inline-flex items-center gap-2 bg-amber-400 text-amber-950 px-5 py-1.5 rounded-full text-xs sm:text-sm font-black uppercase tracking-wider mb-3 shadow-md border-2 border-white animate-bounce-soft">
-          <Sparkles className="w-4 h-4" />
-          <span>Petualangan Literasi Sastra Interaktif</span>
-        </div>
-
-        {/* Judul Cerita */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-emerald-950 mb-2 drop-shadow-sm tracking-tight leading-tight">
-          Kelinci & Kura-Kura
-        </h1>
-        <p className="text-base sm:text-2xl font-black text-amber-800 mb-6 drop-shadow-xs">
-          Di Hutan yang Rindang 🌳
-        </p>
-
-        {/* Kartu Karakter Utama (Dapat Disentuh Siswa) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto mb-8">
-          {STORY_METADATA.characters.map((char) => (
-            <button
-              key={char.id}
-              onClick={() => setSelectedChar(char)}
-              className="group p-3 sm:p-4 rounded-3xl bg-white/95 backdrop-blur-sm border-3 border-emerald-200 hover:border-amber-400 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center cursor-pointer active:scale-95"
-            >
-              <div className="text-4xl sm:text-5xl mb-2 group-hover:scale-110 transition-transform">
-                {char.avatar}
-              </div>
-              <h3 className="font-extrabold text-sm sm:text-base text-slate-800 leading-tight">
-                {char.name}
-              </h3>
-              <span className="text-[10px] sm:text-xs font-semibold text-slate-500 line-clamp-1 mt-0.5">
-                {char.role}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {/* Modal Info Karakter Ringkas jika ditekan */}
-        {selectedChar && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-pop-in">
-            <div className="bg-white rounded-3xl p-6 max-w-sm w-full border-4 border-amber-300 shadow-2xl text-center">
-              <div className="text-5xl mb-2">{selectedChar.avatar}</div>
-              <h4 className="text-xl font-black text-slate-800">{selectedChar.name}</h4>
-              <p className="text-xs font-bold text-amber-700 mb-3">{selectedChar.role}</p>
-              <p className="text-sm font-semibold text-slate-600 mb-4 leading-relaxed">
-                "{selectedChar.description}"
-              </p>
-              <button
-                onClick={() => setSelectedChar(null)}
-                className="px-6 py-2 rounded-2xl btn-game-primary font-bold text-sm"
-              >
-                Tutup Info
-              </button>
-            </div>
+      {/* Top bar */}
+      <header className="relative z-10 w-full px-5 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
+            <BookOpen className="w-4 h-4 text-emerald-400" />
           </div>
-        )}
+          <span className="text-sm font-bold text-white/70 tracking-wide">E-COMIC</span>
+        </div>
+        <FullscreenButton isFullscreen={isFullscreen} onToggle={onToggleFullscreen} />
+      </header>
 
-        {/* Tombol Aksi Utama (Mulai / Lanjutkan) */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+      {/* Main content */}
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-5 pb-8">
+        {/* Title section */}
+        <div className="text-center mb-10 max-w-lg">
+          <div className="inline-block px-3 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 mb-4">
+            <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest">
+              Komik Literasi Interaktif
+            </span>
+          </div>
+          
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3 leading-tight tracking-tight">
+            Kelinci & Kura-Kura
+          </h1>
+          <p className="text-base sm:text-lg text-white/40 font-medium leading-relaxed max-w-md mx-auto">
+            Baca komik interaktif tentang fabel klasik penuh hikmah.
+            Geser halaman, nikmati cerita, dan uji pemahamanmu di akhir.
+          </p>
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex flex-col items-center gap-3 w-full max-w-xs mb-8">
           <button
             onClick={onStartAdventure}
-            className="w-full sm:w-auto px-8 py-4 rounded-3xl btn-game-primary text-lg sm:text-xl font-black shadow-2xl flex items-center justify-center gap-3 animate-pulse-glow"
+            className="w-full py-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-base flex items-center justify-center gap-2.5 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/25 active:scale-[0.98]"
           >
-            <Play className="w-6 h-6 fill-white" />
-            <span>Mulai Petualangan 🚀</span>
+            <Play className="w-5 h-5 fill-white" />
+            <span>Mulai Membaca</span>
           </button>
 
           {hasSavedProgress && onResumeAdventure && (
             <button
               onClick={onResumeAdventure}
-              className="w-full sm:w-auto px-6 py-4 rounded-3xl btn-game-amber text-base sm:text-lg font-bold shadow-xl flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-bold text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98]"
             >
-              <RotateCcw className="w-5 h-5" />
-              <span>Lanjut Adegan #{savedSceneNumber}</span>
+              <RotateCcw className="w-4 h-4" />
+              <span>Lanjutkan Halaman {savedSceneNumber}</span>
             </button>
           )}
         </div>
-      </div>
 
-      {/* Footer Hak Cipta & Info Guru */}
-      <div className="w-full text-center text-xs font-bold text-emerald-900/80 z-10 pt-4">
-        Media Pembelajaran Literasi Sastra Digital Interaktif • Khusus Siswa Sekolah Dasar
-      </div>
+        {/* Info cards - compact */}
+        <div className="grid grid-cols-3 gap-3 w-full max-w-sm mb-6">
+          <div className="text-center p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <div className="text-xl font-black text-white mb-0.5">13</div>
+            <div className="text-[10px] font-semibold text-white/30 uppercase tracking-wide">Halaman</div>
+          </div>
+          <div className="text-center p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <div className="text-xl font-black text-white mb-0.5">Fabel</div>
+            <div className="text-[10px] font-semibold text-white/30 uppercase tracking-wide">Genre</div>
+          </div>
+          <div className="text-center p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <div className="text-xl font-black text-white mb-0.5">SD</div>
+            <div className="text-[10px] font-semibold text-white/30 uppercase tracking-wide">Kelas IV</div>
+          </div>
+        </div>
 
-      {/* Modal Petunjuk */}
-      {showGuide && (
-        <GuideModal onClose={() => setShowGuide(false)} onStartAdventure={onStartAdventure} />
-      )}
+        {/* Expandable guide section */}
+        <button
+          onClick={() => setShowGuide(!showGuide)}
+          className="flex items-center gap-1.5 text-xs font-semibold text-white/30 hover:text-white/50 transition-colors mb-2"
+        >
+          <span>Petunjuk Membaca</span>
+          {showGuide ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        </button>
+
+        {showGuide && (
+          <div className="w-full max-w-sm rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-3 animate-pop-in">
+            <GuideItem
+              step="1"
+              title="Baca & geser halaman"
+              desc="Tekan tombol navigasi atau geser layar untuk berpindah halaman komik."
+            />
+            <GuideItem
+              step="2"
+              title="Sentuh objek interaktif"
+              desc="Temukan titik-titik tersembunyi di gambar komik untuk mendengar reaksi karakter."
+            />
+            <GuideItem
+              step="3"
+              title="Dengarkan narasi"
+              desc="Tekan ikon speaker untuk mendengar cerita dibacakan."
+            />
+            <GuideItem
+              step="4"
+              title="Kuis di akhir"
+              desc="Setelah selesai membaca, jawab pertanyaan untuk menguji pemahamanmu."
+            />
+            <div className="pt-1 text-[10px] text-white/20 font-medium">
+              Keyboard: Panah Kanan (lanjut) / Panah Kiri (kembali) / Spasi (audio)
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="relative z-10 w-full text-center pb-5 px-5">
+        <p className="text-[10px] font-medium text-white/15">
+          Media Pembelajaran Literasi Sastra Digital Interaktif
+        </p>
+      </footer>
     </div>
   );
 };
+
+function GuideItem({ step, title, desc }: { step: string; title: string; desc: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="w-6 h-6 rounded-md bg-emerald-500/15 text-emerald-400 flex items-center justify-center shrink-0 text-xs font-bold">
+        {step}
+      </div>
+      <div>
+        <h4 className="text-xs font-bold text-white/70">{title}</h4>
+        <p className="text-[11px] text-white/30 leading-snug mt-0.5">{desc}</p>
+      </div>
+    </div>
+  );
+}
