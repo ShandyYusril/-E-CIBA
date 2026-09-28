@@ -79,11 +79,11 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
 
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-2 sm:p-4 animate-page-flip">
-      <div className="relative max-w-5xl w-full h-full max-h-[75vh] flex items-center justify-center rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white">
+      <div className="relative max-w-5xl w-full aspect-[2048/1434] max-h-[75vh] flex items-center justify-center rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white">
         <img
           src={image}
           alt={`Komik Adegan ${scene.sceneNumber}: ${scene.title}`}
-          className="w-full h-full object-contain select-none"
+          className="absolute inset-0 w-full h-full object-contain select-none"
           draggable={false}
         />
 
@@ -115,16 +115,28 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
           );
         })}
 
-        {activeDialogues.map((dialogue, index) => (
-          <img
-            key={dialogue.id}
-            src={dialogue.image}
-            alt={dialogue.label}
-            className="pointer-events-none absolute inset-0 h-full w-full object-contain animate-pop-in"
-            style={{ zIndex: 30 + index }}
-            draggable={false}
-          />
-        ))}
+        {activeDialogues.map((dialogue, index) =>
+          dialogue.image ? (
+            <div
+              key={dialogue.id}
+              className="pointer-events-none absolute overflow-hidden animate-pop-in"
+              style={{
+                left: `${dialogue.leftPercent}%`,
+                top: `${dialogue.topPercent}%`,
+                width: `${dialogue.widthPercent}%`,
+                height: `${dialogue.heightPercent}%`,
+                zIndex: 30 + index
+              }}
+            >
+              <img
+                src={dialogue.image}
+                alt={dialogue.label}
+                className="absolute inset-0 h-full w-full scale-[2.5] object-contain"
+                draggable={false}
+              />
+            </div>
+          ) : null
+        )}
 
         {activeDialogues.length > 0 && (
           <button

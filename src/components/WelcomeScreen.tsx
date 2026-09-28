@@ -32,25 +32,25 @@ const comicOptions: ComicOption[] = [
   {
     id: 'comic-1',
     number: 'Komik 01',
-    title: 'Kura-Kura & Kelinci yang Sombong',
+    title: 'Cerita Fabel "Kura-Kura dan Kelinci yang Sombong"',
     genre: 'Fabel',
-    description: 'Fabel tentang ketekunan, kerendahan hati, dan tidak meremehkan teman.',
+    description: 'Fabel tentang ketekunan, kerendahan hati dan tidak meremehkan teman.',
     cover: comic1Cover,
     available: true
   },
   {
     id: 'comic-2',
     number: 'Komik 02',
-    title: 'Timun Mas dan Buto Ijo',
+    title: 'Cerita Dongeng "Timun Mas"',
     genre: 'Dongeng',
-    description: 'Dongeng tentang keberanian, kasih sayang, dan pantang menyerah.',
+    description: 'Dongeng tentang keberanian, kasih sayang dan pantang menyerah.',
     cover: comic2Cover,
     available: true
   },
   {
     id: 'comic-3',
     number: 'Komik 03',
-    title: 'Legenda Malin Kundang',
+    title: 'Cerita Legenda "Malin Kundang"',
     genre: 'Cerita Rakyat',
     description: 'Cerita pilihan berikutnya dengan pesan baik untuk pembaca cilik.',
     cover: comic3Cover,
@@ -260,7 +260,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                       onClick={() => {
                         if (comic.available) {
                           setShowComicSelection(false);
-                           onStartAdventure(comic.id);
+                          onStartAdventure(comic.id);
                         }
                       }}
                       disabled={!comic.available}

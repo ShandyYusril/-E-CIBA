@@ -95,7 +95,7 @@ export interface InteractiveDialogue {
   id: string;
   label: string;
   position: DialoguePosition;
-  image: string;
+  image?: string;
   // Atur nilai ini jika balon dialog belum pas dengan panel gambar.
   leftPercent: number;
   topPercent: number;
@@ -1321,40 +1321,40 @@ export const COMIC_2: ComicStory = {
           label: 'Dialog Ibu Guru kiri atas',
           position: 'left-top',
           image: sceneOneTeacherTop,
-          leftPercent: 0,
-          topPercent: 0,
-          widthPercent: 50,
-          heightPercent: 50
+          leftPercent: 20,
+          topPercent: 3,
+          widthPercent: 22,
+          heightPercent: 23
         },
         {
           id: 'c2-scene1-student-bottom',
           label: 'Dialog Murid kiri bawah',
           position: 'left-bottom',
           image: sceneOneStudentBottom,
-          leftPercent: 0,
-          topPercent: 50,
-          widthPercent: 50,
-          heightPercent: 50
+          leftPercent: 25,
+          topPercent: 41,
+          widthPercent: 23,
+          heightPercent: 25
         },
         {
-          id: 'c2-scene1-student-top',
+          id: 'c2-scene1-student-top-right',
           label: 'Dialog Murid kanan atas',
           position: 'right-top',
           image: sceneOneStudentTop,
-          leftPercent: 50,
+          leftPercent: 71,
           topPercent: 0,
-          widthPercent: 50,
-          heightPercent: 50
+          widthPercent: 22,
+          heightPercent: 29
         },
         {
-          id: 'c2-scene1-teacher-bottom',
+          id: 'c2-scene1-teacher-bottom-right',
           label: 'Dialog Ibu Guru kanan bawah',
           position: 'right-bottom',
           image: sceneOneTeacherBottom,
-          leftPercent: 50,
-          topPercent: 50,
-          widthPercent: 50,
-          heightPercent: 50
+          leftPercent: 58,
+          topPercent: 53,
+          widthPercent: 26,
+          heightPercent: 20
         }
       ],
       hotspots: [
@@ -1441,12 +1441,48 @@ export const COMIC_2: ComicStory = {
       narration:
         'Bu Meggy menunjukkan buku dongeng Timun Mas yang bergambar gadis pemberani dan raksasa hijau kepada seluruh murid.',
       audio: '/assets/audio/comic2-scene-02.mp3',
-      interactiveDialogues: createInteractiveDialogues('c2-scene2', [
-        comic2Scene2TopLeft,
-        comic2Scene2TopRight,
-        comic2Scene2BottomRight,
-        comic2Scene2Extra
-      ]),
+      interactiveDialogues: [
+        {
+          id: 'c2-scene2-teacher-left',
+          label: 'Dialog Ibu Guru kiri',
+          position: 'left-bottom',
+          image: comic2Scene2TopLeft,
+          leftPercent: 25,
+          topPercent: 38,
+          widthPercent: 22,
+          heightPercent: 24
+        },
+        {
+          id: 'c2-scene2-student-boy',
+          label: 'Dialog Murid laki-laki',
+          position: 'right-top',
+          image: comic2Scene2TopRight,
+          leftPercent: 58,
+          topPercent: 2,
+          widthPercent: 18,
+          heightPercent: 22
+        },
+        {
+          id: 'c2-scene2-student-girl',
+          label: 'Dialog Murid perempuan',
+          position: 'right-top',
+          image: comic2Scene2BottomRight,
+          leftPercent: 81,
+          topPercent: 7,
+          widthPercent: 18,
+          heightPercent: 22
+        },
+        {
+          id: 'c2-scene2-teacher-book',
+          label: 'Dialog Ibu Guru dengan buku',
+          position: 'right-middle',
+          image: comic2Scene2Extra,
+          leftPercent: 50,
+          topPercent: 52,
+          widthPercent: 22,
+          heightPercent: 25
+        }
+      ],
       hotspots: [
         {
           id: 'spot-c2-book-2',
@@ -1519,11 +1555,47 @@ export const COMIC_2: ComicStory = {
       narration:
         'Dahulu kala di desa terpencil, hiduplah Mbok Srini yang sebatang kara dan sangat mendambakan anak. Tiba-tiba pusaran angin kencang membawa raksasa Buto Ijo.',
       audio: '/assets/audio/comic2-scene-03.mp3',
-      interactiveDialogues: createInteractiveDialogues('c2-scene3', [
-        comic2Scene3TopRight,
-        comic2Scene3BottomRight,
-        comic2Scene3BottomLeft
-      ]),
+      interactiveDialogues: [
+        {
+          id: 'c2-scene3-narration-top-left',
+          label: 'Narasi kiri atas',
+          position: 'left-top',
+          leftPercent: 1,
+          topPercent: 13,
+          widthPercent: 58,
+          heightPercent: 12
+        },
+        {
+          id: 'c2-scene3-mbok-srini-top-right',
+          label: 'Dialog Mbok Srini kanan atas',
+          position: 'right-top',
+          image: comic2Scene3TopRight,
+          leftPercent: 71,
+          topPercent: 4,
+          widthPercent: 26,
+          heightPercent: 22
+        },
+        {
+          id: 'c2-scene3-giant-bottom-left',
+          label: 'Dialog Buto Ijo kiri bawah',
+          position: 'left-bottom',
+          image: comic2Scene3BottomLeft,
+          leftPercent: 2,
+          topPercent: 44,
+          widthPercent: 22,
+          heightPercent: 28
+        },
+        {
+          id: 'c2-scene3-mbok-srini-bottom-right',
+          label: 'Dialog Mbok Srini kanan bawah',
+          position: 'right-bottom',
+          image: comic2Scene3BottomRight,
+          leftPercent: 78,
+          topPercent: 68,
+          widthPercent: 20,
+          heightPercent: 18
+        }
+      ],
       hotspots: [
         {
           id: 'spot-c2-mbok-3',
@@ -1606,11 +1678,38 @@ export const COMIC_2: ComicStory = {
       narration:
         'Karena sangat ingin memiliki anak, Mbok Srini menyetujui syarat berat Buto Ijo dan menerima biji mentimun emas yang bersinar.',
       audio: '/assets/audio/comic2-scene-04.mp3',
-      interactiveDialogues: createInteractiveDialogues('c2-scene4', [
-        comic2Scene4TopLeft,
-        comic2Scene4BottomLeft,
-        comic2Scene4TopRight
-      ]),
+      interactiveDialogues: [
+        {
+          id: 'c2-scene4-dialogue-1',
+          label: 'Dialog Buto Ijo kiri atas',
+          position: 'left-top',
+          image: comic2Scene4TopLeft,
+          leftPercent: 3,
+          topPercent: 2,
+          widthPercent: 20,
+          heightPercent: 22
+        },
+        {
+          id: 'c2-scene4-dialogue-2',
+          label: 'Dialog Mbok Srini kiri bawah',
+          position: 'left-bottom',
+          image: comic2Scene4BottomLeft,
+          leftPercent: 3,
+          topPercent: 47,
+          widthPercent: 22,
+          heightPercent: 20
+        },
+        {
+          id: 'c2-scene4-dialogue-3',
+          label: 'Dialog Buto Ijo kanan atas',
+          position: 'right-top',
+          image: comic2Scene4TopRight,
+          leftPercent: 71,
+          topPercent: 4,
+          widthPercent: 25,
+          heightPercent: 23
+        }
+      ],
       hotspots: [
         {
           id: 'spot-c2-seed-4',
