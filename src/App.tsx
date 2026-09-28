@@ -10,11 +10,18 @@ import { soundEffects } from './utils/soundEffects';
 
 type ScreenState = 'loading' | 'welcome' | 'story' | 'result';
 
+const QUIZ_URLS: Record<string, string> = {
+  'comic-1': 'https://quiz.zep.us/id/play/aW5KxX',
+  'comic-2': 'https://quiz.zep.us/id/play/kPewlB',
+  'comic-3': 'https://quiz.zep.us/id/play/zZbMKX'
+};
+
 export function App() {
   const [screenState, setScreenState] = useState<ScreenState>('loading');
 
   const {
     currentStory,
+    activeStoryId,
     selectStory,
     currentScene,
     currentSceneIndex,
@@ -29,9 +36,8 @@ export function App() {
     nextScene,
     prevScene,
     goToScene,
-    submitAnswer,
-    discoverHotspot,
-    resetProgress
+    resetProgress,
+    continueStory
   } = useStoryProgress();
 
   const {
@@ -81,6 +87,16 @@ export function App() {
     setScreenState('welcome');
   };
 
+  const handleBackFromResult = () => {
+    resetProgress();
+    setScreenState('welcome');
+  };
+
+  const handleBackToStory = () => {
+    continueStory();
+    setScreenState('story');
+  };
+
   return (
     <div className="h-full w-full overflow-hidden bg-slate-900 font-sans select-none">
       {screenState === 'loading' && <LoadingScreen onLoaded={handleLoaded} />}
@@ -104,7 +120,6 @@ export function App() {
            scenes={currentStory.scenes}
            totalScore={totalScore}
           answers={answers}
-          discoveredHotspots={progress.discoveredHotspotIds}
           isMuted={isMuted}
           isPlayingNarration={isPlayingNarration}
           isFullscreen={isFullscreen}
@@ -115,20 +130,19 @@ export function App() {
           onNextScene={nextScene}
           onPrevScene={prevScene}
           onGoToScene={goToScene}
-          onSubmitAnswer={submitAnswer}
-          onDiscoverHotspot={discoverHotspot}
           onHomeClick={() => setScreenState('welcome')}
         />
       )}
 
       {screenState === 'result' && (
         <ResultScreen
-          totalScore={totalScore}
-          maxScore={totalScenes * 10}
+          quizUrl={QUIZ_URLS[activeStoryId]}
           indicatorStats={indicatorStats}
           unlockedBadges={unlockedBadges}
           allBadges={allBadges}
           onRestart={handleRestart}
+          onBack={handleBackFromResult}
+          onBackToStory={handleBackToStory}
         />
       )}
     </div>

@@ -14,9 +14,41 @@ import comic2Scene3TopRight from '../assets/comic/comic2/scene3/kanan atas.webp'
 import comic2Scene3BottomRight from '../assets/comic/comic2/scene3/kanan bawah.webp';
 import comic2Scene3BottomLeft from '../assets/comic/comic2/scene3/kiri bawah.webp';
 import comic2Scene4Artwork from '../assets/comic/comic2/scene4/scene utama.png';
-import comic2Scene4TopLeft from '../assets/comic/comic2/scene4/kiri atas.png';
-import comic2Scene4BottomLeft from '../assets/comic/comic2/scene4/kiri bawah.png';
-import comic2Scene4TopRight from '../assets/comic/comic2/scene4/kanan atas.png';
+import comic2Scene4TopLeft from '../assets/comic/comic2/scene4/kiri atas.webp';
+import comic2Scene4BottomLeft from '../assets/comic/comic2/scene4/kiri bawah.webp';
+import comic2Scene4TopRight from '../assets/comic/comic2/scene4/kanan atas.webp';
+import comic2Scene5Artwork from '../assets/comic/comic2/scene5/scene utama.webp';
+import comic2Scene5TopLeft from '../assets/comic/comic2/scene5/kiri atas.webp';
+import comic2Scene5BottomLeft from '../assets/comic/comic2/scene5/kiri bawah.webp';
+import comic2Scene5TopRight from '../assets/comic/comic2/scene5/kanan atas.webp';
+import comic2Scene5MiddleRight from '../assets/comic/comic2/scene5/kanan tengah.webp';
+import comic2Scene5BottomRight from '../assets/comic/comic2/scene5/kanan bawah.webp';
+import comic2Scene6TopLeft from '../assets/comic/comic2/scene6/kiri atas.png';
+import comic2Scene6Extra from '../assets/comic/comic2/scene6/45.png';
+import comic2Scene6Artwork from '../assets/comic/comic2/scene6/scene utama.webp';
+import comic2Scene7Artwork from '../assets/comic/comic2/scene7/scene utama.webp';
+import comic2Scene7BottomLeft from '../assets/comic/comic2/scene7/kiri bawah.webp';
+import comic2Scene7TopRight from '../assets/comic/comic2/scene7/kanan atas.webp';
+import comic2Scene7TopMiddle from '../assets/comic/comic2/scene7/tengah atas.webp';
+import comic2Scene7Middle from '../assets/comic/comic2/scene7/tengah.webp';
+import comic2Scene8Artwork from '../assets/comic/comic2/scene8/scene utama.webp';
+import comic2Scene8TopLeft from '../assets/comic/comic2/scene8/kiri atas.webp';
+import comic2Scene8BottomLeft from '../assets/comic/comic2/scene8/kiri bawah.webp';
+import comic2Scene8TopRight from '../assets/comic/comic2/scene8/kanan atas.webp';
+import comic2Scene8BottomRight from '../assets/comic/comic2/scene8/kanan bawah.webp';
+import comic2Scene9Artwork from '../assets/comic/comic2/scene9/scene utama.webp';
+import comic2Scene9TopLeft from '../assets/comic/comic2/scene9/kiri atas.webp';
+import comic2Scene9MiddleLeft from '../assets/comic/comic2/scene9/kiri tengah.webp';
+import comic2Scene9TopRight from '../assets/comic/comic2/scene9/kanan atas.webp';
+import comic2Scene10Artwork from '../assets/comic/comic2/scene10/scene utama.webp';
+import comic2Scene10TopLeft from '../assets/comic/comic2/scene10/kiri atas.webp';
+import comic2Scene10BottomLeft from '../assets/comic/comic2/scene10/kiri bawah.webp';
+import comic2Scene10TopRight from '../assets/comic/comic2/scene10/kanan atas.webp';
+import comic2Scene10BottomRight from '../assets/comic/comic2/scene10/kanan bawah.webp';
+import comic2Scene11Artwork from '../assets/comic/comic2/scene11/scene utama .webp';
+import comic2Scene11TopLeft from '../assets/comic/comic2/scene11/kiri atas.webp';
+import comic2Scene11BottomLeft from '../assets/comic/comic2/scene11/kiri bawah.webp';
+import comic2Scene11BottomRight from '../assets/comic/comic2/scene11/kanan bawah.webp';
 import comic1Scene01 from '../assets/comic/comic1/scene-01.webp';
 import comic1Scene02 from '../assets/comic/comic1/scene-02.webp';
 import comic1Scene03 from '../assets/comic/comic1/scene-03.webp';
@@ -57,7 +89,7 @@ export interface Hotspot {
   soundType: 'laugh' | 'pop' | 'chime' | 'splash' | 'cheer' | 'snore' | 'water';
 }
 
-export type DialoguePosition = 'left-top' | 'left-bottom' | 'right-top' | 'right-bottom';
+export type DialoguePosition = 'left-top' | 'left-bottom' | 'right-top' | 'right-middle' | 'right-bottom';
 
 export interface InteractiveDialogue {
   id: string;
@@ -143,16 +175,16 @@ export interface ComicStory {
 }
 
 const createInteractiveDialogues = (sceneId: string, images: string[]): InteractiveDialogue[] => {
-  const positions: DialoguePosition[] = ['left-top', 'left-bottom', 'right-top', 'right-bottom'];
+  const positions: DialoguePosition[] = ['left-top', 'left-bottom', 'right-top', 'right-middle', 'right-bottom'];
   return images.map((image, index) => ({
     id: `${sceneId}-dialogue-${index + 1}`,
     label: `Dialog scene ${sceneId} panel ${index + 1}`,
     position: positions[index] || 'right-bottom',
     image,
-    leftPercent: index % 2 === 0 ? 0 : 50,
-    topPercent: index < 2 ? 0 : 50,
+    leftPercent: index < 2 ? 0 : 50,
+    topPercent: index === 1 ? 50 : index === 3 ? 25 : index === 4 ? 50 : 0,
     widthPercent: 50,
-    heightPercent: 50
+    heightPercent: index === 3 ? 25 : 50
   }));
 };
 
@@ -1643,7 +1675,7 @@ export const COMIC_2: ComicStory = {
       id: 5,
       sceneNumber: 5,
       title: 'Kelahiran Timun Mas dan Kedatangan Buto Ijo Menagih Janji',
-      image: '/assets/comic2/scene-05.webp',
+      image: comic2Scene5Artwork,
       speaker: 'Mbok Srini',
       speakerRole: 'mbok-srini',
       dialogue:
@@ -1651,6 +1683,13 @@ export const COMIC_2: ComicStory = {
       narration:
         'Dari buah mentimun raksasa lahirlah bayi cantik bernama Timun Mas. Tujuh belas tahun berlalu, Buto Ijo datang menggelegar menagih janjinya.',
       audio: '/assets/audio/comic2-scene-05.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene5', [
+        comic2Scene5TopLeft,
+        comic2Scene5BottomLeft,
+        comic2Scene5TopRight,
+        comic2Scene5MiddleRight,
+        comic2Scene5BottomRight
+      ]),
       hotspots: [
         {
           id: 'spot-c2-baby-5',
@@ -1724,7 +1763,7 @@ export const COMIC_2: ComicStory = {
       id: 6,
       sceneNumber: 6,
       title: 'Empat Kantong Bekal Sakti dan Doa Timun Mas',
-      image: '/assets/comic2/scene-06.webp',
+      image: comic2Scene6Artwork,
       speaker: 'Mbok Srini',
       speakerRole: 'mbok-srini',
       dialogue:
@@ -1732,6 +1771,10 @@ export const COMIC_2: ComicStory = {
       narration:
         'Mbok Srini membekali Timun Mas empat benda ajaib dari petapa bijak. Timun Mas berlari keluar sambil berdoa memohon perlindungan Tuhan.',
       audio: '/assets/audio/comic2-scene-06.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene6', [
+        comic2Scene6TopLeft,
+        comic2Scene6Extra
+      ]),
       hotspots: [
         {
           id: 'spot-c2-pouches-6',
@@ -1805,13 +1848,19 @@ export const COMIC_2: ComicStory = {
       id: 7,
       sceneNumber: 7,
       title: 'Lemparan Biji Mentimun dan Jarum Sakti',
-      image: '/assets/comic2/scene-07.webp',
+      image: comic2Scene7Artwork,
       speaker: 'Timun Mas',
       speakerRole: 'timun-mas',
       dialogue: 'Rasakan ini, raksasa! Terimalah jarum ini!',
       narration:
         'Biji mentimun tumbuh lebat melilit kaki Buto Ijo. Kemudian Timun Mas melempar jarum yang seketika menjelma menjadi rumpun bambu tajam menusuk raksasa.',
       audio: '/assets/audio/comic2-scene-07.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene7', [
+        comic2Scene7BottomLeft,
+        comic2Scene7TopRight,
+        comic2Scene7TopMiddle,
+        comic2Scene7Middle
+      ]),
       hotspots: [
         {
           id: 'spot-c2-vines-7',
@@ -1876,13 +1925,19 @@ export const COMIC_2: ComicStory = {
       id: 8,
       sceneNumber: 8,
       title: 'Lautan Garam dan Terasi Lumpur Panas',
-      image: '/assets/comic2/scene-08.webp',
+      image: comic2Scene8Artwork,
       speaker: 'Buto Ijo',
       speakerRole: 'buto-ijo',
       dialogue: 'Tolong! Lumpur ini sangat panas! Aaaakh...!',
       narration:
         'Timun Mas menebar garam hingga menjadi lautan air asin yang luas. Saat raksasa berhasil menepi, ia melempar terasi yang seketika menjelma lautan lumpur mendidih.',
       audio: '/assets/audio/comic2-scene-08.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene8', [
+        comic2Scene8TopLeft,
+        comic2Scene8BottomLeft,
+        comic2Scene8TopRight,
+        comic2Scene8BottomRight
+      ]),
       hotspots: [
         {
           id: 'spot-c2-salt-8',
@@ -1956,13 +2011,18 @@ export const COMIC_2: ComicStory = {
       id: 9,
       sceneNumber: 9,
       title: 'Kemenangan Keberanian dan Pelukan Syukur',
-      image: '/assets/comic2/scene-09.webp',
+      image: comic2Scene9Artwork,
       speaker: 'Mbok Srini',
       speakerRole: 'mbok-srini',
       dialogue: 'Anakku! Terima kasih Tuhan, kau selamat!',
       narration:
         'Buto Ijo tenggelam di lumpur panas dan tak pernah kembali lagi. Timun Mas pulang ke pelukan Mbok Srini dengan penuh rasa syukur dan damai.',
       audio: '/assets/audio/comic2-scene-09.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene9', [
+        comic2Scene9TopLeft,
+        comic2Scene9MiddleLeft,
+        comic2Scene9TopRight
+      ]),
       hotspots: [
         {
           id: 'spot-c2-safe-9',
@@ -2028,7 +2088,7 @@ export const COMIC_2: ComicStory = {
       id: 10,
       sceneNumber: 10,
       title: 'Diskusi Teladan Tokoh di Kelas IV',
-      image: '/assets/comic2/scene-10.webp',
+      image: comic2Scene10Artwork,
       speaker: 'Bu Meggy',
       speakerRole: 'teacher',
       dialogue:
@@ -2036,6 +2096,12 @@ export const COMIC_2: ComicStory = {
       narration:
         'Raka dan Siti menyampaikan bahwa Timun Mas patut dicontoh karena berani, tidak panik, cerdas berikhtiar, dan sangat patuh kepada orang tuanya.',
       audio: '/assets/audio/comic2-scene-10.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene10', [
+        comic2Scene10TopLeft,
+        comic2Scene10BottomLeft,
+        comic2Scene10TopRight,
+        comic2Scene10BottomRight
+      ]),
       hotspots: [
         {
           id: 'spot-c2-raka-10',
@@ -2102,7 +2168,7 @@ export const COMIC_2: ComicStory = {
       id: 11,
       sceneNumber: 11,
       title: 'Hikmah Al-Qur’an: QS. Al-Insyirah Ayat 5-6',
-      image: '/assets/comic2/scene-11.webp',
+      image: comic2Scene11Artwork,
       speaker: 'Bu Meggy',
       speakerRole: 'teacher',
       dialogue:
@@ -2110,6 +2176,11 @@ export const COMIC_2: ComicStory = {
       narration:
         'Bu Meggy menuliskan ayat suci QS. Al-Insyirah: 5-6 di papan tulis, menegaskan bahwa pertolongan Allah selalu menyertai hamba-Nya yang bersabar dan berusaha.',
       audio: '/assets/audio/comic2-scene-11.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene11', [
+        comic2Scene11TopLeft,
+        comic2Scene11BottomLeft,
+        comic2Scene11BottomRight
+      ]),
       quranVerse: {
         arabic:
           'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ﴿٥﴾ إِنَّ مَعَ الْعُسْرِ يُسْرًا ﴿٦﴾',

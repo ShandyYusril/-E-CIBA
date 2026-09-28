@@ -289,6 +289,20 @@ export function useStoryProgress() {
     }));
   }, []);
 
+  // Kembali membaca dari halaman terakhir setelah cerita selesai
+  const continueStory = useCallback(() => {
+    setAppState((prev) => ({
+      ...prev,
+      stories: {
+        ...prev.stories,
+        [prev.activeStoryId]: {
+          ...(prev.stories[prev.activeStoryId] || { ...defaultStoryProgress }),
+          completed: false
+        }
+      }
+    }));
+  }, []);
+
   // Hitung statistik indikator untuk cerita aktif
   const indicatorStats: Record<
     LiteracyIndicatorType,
@@ -344,6 +358,7 @@ export function useStoryProgress() {
     goToScene,
     submitAnswer,
     discoverHotspot,
-    resetProgress: resetCurrentStory
+    resetProgress: resetCurrentStory,
+    continueStory
   };
 }

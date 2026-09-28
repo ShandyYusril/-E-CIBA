@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Star, Volume2 } from 'lucide-react';
-import type { StoryScene, Hotspot } from '../data/story';
+import type { StoryScene } from '../data/story';
 import { ComicScene } from './ComicScene';
 import { NavigationControls } from './NavigationControls';
 import { ProgressIndicator } from './ProgressIndicator';
-import { FinalQuiz } from './FinalQuiz';
 import { FullscreenButton } from './FullscreenButton';
 import { soundEffects } from '../utils/soundEffects';
 
@@ -15,7 +14,6 @@ interface StoryViewerProps {
   scenes: StoryScene[];
   totalScore: number;
   answers: Record<string, { selectedOptionId: string; isCorrect: boolean; pointsEarned: number }>;
-  discoveredHotspots: string[];
   isMuted: boolean;
   isPlayingNarration: boolean;
   isFullscreen: boolean;
@@ -26,14 +24,6 @@ interface StoryViewerProps {
   onNextScene: () => void;
   onPrevScene: () => void;
   onGoToScene: (sceneId: number) => void;
-  onSubmitAnswer: (
-    checkpointId: string,
-    optionId: 'A' | 'B' | 'C' | 'D',
-    isCorrect: boolean,
-    indicator: any,
-    points: number
-  ) => void;
-  onDiscoverHotspot: (hotspotId: string) => void;
   onHomeClick: () => void;
 }
 
@@ -44,7 +34,6 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
   scenes,
   totalScore,
   answers,
-  discoveredHotspots,
   isMuted,
   isPlayingNarration,
   isFullscreen,
@@ -55,11 +44,8 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
   onNextScene,
   onPrevScene,
   onGoToScene,
-  onSubmitAnswer,
-  onDiscoverHotspot,
   onHomeClick
 }) => {
-  const [isFinalQuizOpen, setIsFinalQuizOpen] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   // Reset modal UI saat berpindah scene (pola resmi React: menyesuaikan state
@@ -67,7 +53,6 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
   const [prevSceneId, setPrevSceneId] = useState(currentScene.id);
   if (prevSceneId !== currentScene.id) {
     setPrevSceneId(currentScene.id);
-    setIsFinalQuizOpen(false);
   }
 
   // Hentikan narasi audio saat scene berubah (side-effect murni)
@@ -78,16 +63,12 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
   // Navigasi Keyboard (Panah Kanan, Panah Kiri, Spasi untuk Audio)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isFinalQuizOpen || showExitConfirm) return;
+      if (showExitConfirm) return;
 
       if (e.key === 'ArrowRight') {
         e.preventDefault();
         soundEffects.pop();
-        if (currentSceneIndex === totalScenes - 1) {
-          setIsFinalQuizOpen(true);
-        } else {
-          onNextScene();
-        }
+        onNextScene();
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         if (currentSceneIndex > 0) {
@@ -104,7 +85,6 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
-    isFinalQuizOpen,
     showExitConfirm,
     currentSceneIndex,
     totalScenes,
@@ -114,18 +94,6 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
     onPlayNarration
   ]);
 
-
-  // Handler saat hotspot di-tap
-  const handleTriggerHotspot = (hotspot: Hotspot) => {
-    onDiscoverHotspot(hotspot.id);
-    if (!isMuted) {
-      if (hotspot.soundType === 'laugh') soundEffects.laugh();
-      else if (hotspot.soundType === 'splash') soundEffects.splash();
-      else if (hotspot.soundType === 'snore') soundEffects.snore();
-      else if (hotspot.soundType === 'cheer') soundEffects.cheer();
-      else soundEffects.pop();
-    }
-  };
 
   // Handler tombol Audio Narasi
   const handlePlayCurrentNarration = () => {
@@ -185,12 +153,10 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
 
       {/* 2. KONTEN TENGAH: GAMBAR KOMIK BESAR (FOKUS UTAMA) */}
       <main className="relative flex-1 w-full h-full flex items-center justify-center overflow-hidden">
-        <ComicScene
-          key={currentScene.id}
-          scene={currentScene}
-          onTriggerHotspot={handleTriggerHotspot}
-          discoveredHotspots={discoveredHotspots}
-        />
+          <ComicScene
+            key={currentScene.id}
+            scene={currentScene}
+          />
       </main>
 
       {/* 3. FOOTER STORY MODE: BALON DIALOG & KONTROL NAVIGASI */}
@@ -203,11 +169,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
           }}
           onNext={() => {
             soundEffects.pop();
-            if (currentSceneIndex === totalScenes - 1) {
-              setIsFinalQuizOpen(true);
-            } else {
-              onNextScene();
-            }
+            onNextScene();
           }}
           hasPrev={currentSceneIndex > 0}
           hasNext={currentSceneIndex < totalScenes - 1}
@@ -215,17 +177,6 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
           isPlayingNarration={isPlayingNarration}
         />
       </footer>
-
-      {isFinalQuizOpen && (
-        <FinalQuiz
-          checkpoints={scenes.flatMap((scene) => (scene.checkpoint ? [scene.checkpoint] : []))}
-          onSubmitAnswer={onSubmitAnswer}
-          onFinish={() => {
-            setIsFinalQuizOpen(false);
-            onNextScene();
-          }}
-        />
-      )}
 
       {/* MODAL KONFIRMASI KELUAR (Agar anak tidak sengaja memencet) */}
       {showExitConfirm && (

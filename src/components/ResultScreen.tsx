@@ -4,7 +4,9 @@ import {
   Award,
   RotateCcw,
   Printer,
-  BookOpen
+  BookOpen,
+  ArrowLeft,
+  ExternalLink
 } from 'lucide-react';
 import { LITERACY_INDICATORS } from '../data/indicators';
 import type { LiteracyIndicatorType } from '../data/indicators';
@@ -13,8 +15,7 @@ import { fireEndingGrandCelebration } from '../utils/confetti';
 import { soundEffects } from '../utils/soundEffects';
 
 interface ResultScreenProps {
-  totalScore: number;
-  maxScore: number;
+  quizUrl: string;
   indicatorStats: Record<
     LiteracyIndicatorType,
     { earned: number; total: number; percentage: number; questionCount: number }
@@ -22,31 +23,25 @@ interface ResultScreenProps {
   unlockedBadges: Badge[];
   allBadges: Badge[];
   onRestart: () => void;
+  onBack: () => void;
+  onBackToStory: () => void;
 }
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
-  totalScore,
-  maxScore,
   indicatorStats,
   unlockedBadges,
   allBadges,
-  onRestart
+  onRestart,
+  onBack,
+  onBackToStory,
+  quizUrl
 }) => {
+  const [showQuizConfirm, setShowQuizConfirm] = React.useState(false);
   useEffect(() => {
     // Selebrasi kemenangan saat masuk ke result screen
     fireEndingGrandCelebration();
     soundEffects.fanfare();
   }, []);
-
-  const overallPercentage = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
-
-  const getStarRating = () => {
-    if (overallPercentage >= 80) return 3;
-    if (overallPercentage >= 50) return 2;
-    return 1;
-  };
-
-  const starsCount = getStarRating();
 
   const handlePrint = () => {
     window.print();
@@ -54,6 +49,13 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
 
   return (
     <div className="min-h-full w-full bg-gradient-to-b from-amber-100 via-emerald-50 to-green-100 p-4 sm:p-8 overflow-y-auto">
+      <button
+        onClick={onBackToStory}
+        className="mb-4 flex items-center gap-2 rounded-xl border-2 border-emerald-300 bg-white px-4 py-2.5 text-sm font-black text-emerald-800 shadow-md transition hover:bg-emerald-50"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Kembali Membaca Komik
+      </button>
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Banner Utama Selebrasi */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-amber-300 text-center relative overflow-hidden">
@@ -68,11 +70,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
               {[1, 2, 3].map((s) => (
                 <Star
                   key={s}
-                  className={`w-7 h-7 sm:w-8 sm:h-8 ${
-                    s <= starsCount
-                      ? 'fill-amber-400 text-amber-500 drop-shadow'
-                      : 'text-slate-300'
-                  }`}
+                  className="w-7 h-7 fill-amber-400 text-amber-500 drop-shadow sm:w-8 sm:h-8"
                 />
               ))}
             </div>
@@ -85,26 +83,17 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             Selamat! Kamu telah membaca komik dan menuntaskan petualangan literasi sastra dengan luar biasa!
           </p>
 
-          {/* Kartu Skor Besar */}
-          <div className="inline-flex items-center gap-4 bg-amber-50 border-3 border-amber-300 px-6 py-3 rounded-2xl shadow-inner mb-2">
-            <div>
-              <span className="text-xs sm:text-sm font-bold text-amber-800 uppercase tracking-wider block">
-                Total Skor Literasi
-              </span>
-              <span className="text-3xl sm:text-5xl font-black text-amber-600">
-                {totalScore}{' '}
-                <span className="text-lg sm:text-2xl font-bold text-slate-500">/ {maxScore}</span>
-              </span>
-            </div>
-            <div className="h-10 w-[2px] bg-amber-200"></div>
-            <div>
-              <span className="text-xs sm:text-sm font-bold text-emerald-800 uppercase tracking-wider block">
-                Pencapaian
-              </span>
-              <span className="text-3xl sm:text-5xl font-black text-emerald-600">
-                {overallPercentage}%
-              </span>
-            </div>
+          <div className="mx-auto mb-2 max-w-xl rounded-2xl border-2 border-emerald-200 bg-emerald-50 px-5 py-4">
+            <p className="text-sm font-bold text-emerald-900 sm:text-base">
+              Komik selesai. Sekarang waktunya menguji pemahamanmu lewat kuis game.
+            </p>
+            <button
+              onClick={() => setShowQuizConfirm(true)}
+              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-[0_4px_0_#166534] transition hover:bg-emerald-500 active:translate-y-1 active:shadow-none"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Lanjut ke Kuis Game
+            </button>
           </div>
 
           {/* Kalimat Motivasi */}
@@ -236,8 +225,41 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             <RotateCcw className="w-5 h-5" />
             <span>Mulai Ulang Cerita 📖</span>
           </button>
+
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 rounded-2xl border-2 border-slate-300 bg-white px-6 py-3.5 text-sm font-bold text-slate-700 shadow-lg transition hover:bg-slate-50"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            <span>Kembali ke Menu</span>
+          </button>
         </div>
       </div>
+
+      {showQuizConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-3xl bg-white p-6 text-center shadow-2xl">
+            <h2 className="text-xl font-black text-slate-900">Lanjut ke kuis game?</h2>
+            <p className="mt-3 text-sm font-semibold leading-relaxed text-slate-600">
+              Kamu akan membuka kuis di halaman baru. Apakah kamu yakin ingin melanjutkan?
+            </p>
+            <div className="mt-6 flex justify-center gap-3">
+              <button
+                onClick={() => setShowQuizConfirm(false)}
+                className="rounded-xl bg-slate-200 px-5 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-300"
+              >
+                Nanti
+              </button>
+              <button
+                onClick={() => window.open(quizUrl, '_blank', 'noopener,noreferrer')}
+                className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-black text-white transition hover:bg-emerald-500"
+              >
+                Ya, Buka Kuis
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

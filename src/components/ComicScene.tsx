@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
-import type { StoryScene, Hotspot, InteractiveDialogue } from '../data/story';
-import { HotspotInteraction } from './HotspotInteraction';
+import type { StoryScene, InteractiveDialogue } from '../data/story';
 import { useComicImage } from '../hooks/useComicImage';
 
 interface ComicSceneProps {
   scene: StoryScene;
-  onTriggerHotspot: (hotspot: Hotspot) => void;
-  discoveredHotspots: string[];
 }
 
 export const ComicScene: React.FC<ComicSceneProps> = ({
   scene,
-  onTriggerHotspot,
-  discoveredHotspots
 }) => {
   // Component direm-ount per scene (via key={scene.id} di StoryViewer),
   // sehingga tidak perlu reset state di dalam effect.
@@ -57,13 +52,6 @@ export const ComicScene: React.FC<ComicSceneProps> = ({
           </div>
         )}
 
-        {/* Lapisan Titik Interaksi Hotspot (Bintang/Sentuhan Karakter) */}
-        <HotspotInteraction
-          hotspots={scene.hotspots}
-          onTriggerHotspot={onTriggerHotspot}
-          discoveredIds={discoveredHotspots}
-        />
-
         {/* Badge Nomor Adegan di Sudut Gambar */}
         <div className="absolute top-3 left-3 bg-slate-950/80 text-white/70 px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-md border border-white/10 flex items-center gap-1">
           <span>Halaman</span> {scene.sceneNumber}
@@ -79,8 +67,15 @@ interface InteractiveComicArtworkProps {
 }
 
 const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene, image }) => {
-  const [activeDialogueId, setActiveDialogueId] = useState<string | null>(null);
+  const [activeDialogueIds, setActiveDialogueIds] = useState<string[]>([]);
   const dialogues = scene.interactiveDialogues as InteractiveDialogue[];
+  const activeDialogues = dialogues.filter((dialogue) => activeDialogueIds.includes(dialogue.id));
+
+  const openDialogue = (dialogueId: string) => {
+    setActiveDialogueIds((currentIds) =>
+      currentIds.includes(dialogueId) ? currentIds : [...currentIds, dialogueId]
+    );
+  };
 
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-2 sm:p-4 animate-page-flip">
@@ -93,12 +88,12 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
         />
 
         {dialogues.map((dialogue) => {
-          const isActive = activeDialogueId === dialogue.id;
+          const isActive = activeDialogueIds.includes(dialogue.id);
           return (
             <button
               key={dialogue.id}
               type="button"
-              onClick={() => setActiveDialogueId(isActive ? null : dialogue.id)}
+              onClick={() => openDialogue(dialogue.id)}
               style={{
                 left: `${dialogue.leftPercent}%`,
                 top: `${dialogue.topPercent}%`,
@@ -108,32 +103,33 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
               className={`absolute z-20 group cursor-pointer border-2 border-transparent transition-colors hover:border-amber-300/80 focus:border-amber-300 focus:outline-none ${isActive ? 'z-30' : ''}`}
               aria-label={`${isActive ? 'Tutup' : 'Buka'} ${dialogue.label}`}
             >
-              {isActive ? (
-                <img
-                  src={dialogue.image}
-                  alt={dialogue.label}
-                  className="absolute inset-0 h-full w-full object-contain mix-blend-multiply pointer-events-none animate-pop-in"
-                  draggable={false}
-                />
-              ) : (
-                <span className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5 text-[10px] font-black text-white transition-transform group-hover:scale-110 sm:text-xs">
-                  <span className="relative flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-amber-400 text-slate-950 shadow-[0_4px_0_rgba(120,53,15,0.8)] animate-pulse-glow sm:h-14 sm:w-14">
-                    <span className="absolute inset-0 rounded-full border-2 border-amber-200 animate-ping opacity-60" />
-                    <MessageCircle className="relative h-5 w-5 sm:h-6 sm:w-6" />
-                  </span>
-                  <span className="rounded-full bg-slate-950/80 px-2.5 py-1 shadow-md">
-                    Buka dialog
-                  </span>
+              <span className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5 text-[10px] font-black text-white transition-transform group-hover:scale-110 sm:text-xs">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-amber-400 text-slate-950 shadow-[0_4px_0_rgba(120,53,15,0.8)] sm:h-14 sm:w-14">
+                  <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
                 </span>
-              )}
+                <span className="rounded-full bg-slate-950/80 px-2.5 py-1 shadow-md">
+                  Klik pesan
+                </span>
+              </span>
             </button>
           );
         })}
 
-        {activeDialogueId && (
+        {activeDialogues.map((dialogue, index) => (
+          <img
+            key={dialogue.id}
+            src={dialogue.image}
+            alt={dialogue.label}
+            className="pointer-events-none absolute inset-0 h-full w-full object-contain animate-pop-in"
+            style={{ zIndex: 30 + index }}
+            draggable={false}
+          />
+        ))}
+
+        {activeDialogues.length > 0 && (
           <button
             type="button"
-            onClick={() => setActiveDialogueId(null)}
+            onClick={() => setActiveDialogueIds([])}
             className="absolute right-3 top-3 z-40 rounded-full bg-slate-950/80 p-2 text-white shadow-md transition hover:bg-red-600"
             aria-label="Tutup dialog"
           >
@@ -143,6 +139,9 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
 
         <div className="absolute left-3 top-3 z-40 rounded-full bg-slate-950/80 px-3 py-1 text-xs font-bold text-white/80 shadow-md">
           Halaman {scene.sceneNumber}
+        </div>
+        <div className="absolute bottom-3 left-1/2 z-40 -translate-x-1/2 rounded-full bg-slate-950/80 px-3 py-1 text-[10px] font-bold text-white/90 shadow-md sm:text-xs">
+          Klik lingkaran pesan untuk membaca dialog
         </div>
       </div>
     </div>

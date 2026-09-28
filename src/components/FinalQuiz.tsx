@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Check, ChevronRight, X } from 'lucide-react';
 import type { LiteracyCheckpoint, LiteracyOption } from '../data/story';
 
@@ -18,8 +18,11 @@ export const FinalQuiz: React.FC<FinalQuizProps> = ({ checkpoints, onSubmitAnswe
   const [questionIndex, setQuestionIndex] = useState(0);
   const [selected, setSelected] = useState<LiteracyOption | null>(null);
 
+  useEffect(() => {
+    if (checkpoints.length === 0) onFinish();
+  }, [checkpoints.length, onFinish]);
+
   if (checkpoints.length === 0) {
-    onFinish();
     return null;
   }
 

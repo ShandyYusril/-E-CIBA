@@ -6,6 +6,8 @@ import logoImage from '../assets/background/logo.webp';
 import comic1Cover from '../assets/comic/comic1/scene-01.webp';
 import comic2Cover from '../assets/comic/comic2/scene1/scene utama.png';
 import comic3Cover from '../assets/comic/comic3/scene-1.webp';
+import alifahPhoto from '../assets/background/alipah.png';
+import dosenPhoto from '../assets/background/dosen.png';
 
 interface WelcomeScreenProps {
   onStartAdventure: (comicId?: string) => void;
@@ -303,7 +305,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
       {showAuthorInfo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17352e]/65 p-4 backdrop-blur-sm animate-pop-in">
-          <div className="relative w-full max-w-sm rounded-3xl border border-white/60 bg-[#f8f5ed] p-6 text-center shadow-2xl">
+          <div className="relative max-h-[90dvh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-white/60 bg-[#f8f5ed] p-5 shadow-2xl sm:p-8">
             <button
               onClick={() => setShowAuthorInfo(false)}
               className="absolute right-4 top-4 rounded-full p-2 text-[#668176] transition hover:bg-[#e8e1d3] hover:text-[#17352e]"
@@ -312,19 +314,55 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               <X className="h-5 w-5" />
             </button>
 
-            <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full border-4 border-[#d8864b] bg-[#17352e] text-3xl font-black text-[#f2eee5] shadow-[0_5px_0_#b56839]">
-              ML
+            <div className="pr-10">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b56839]">Profil pengembang</p>
+              <h2 className="mt-2 text-2xl font-black text-[#17352e] sm:text-3xl">Penulis dan Dosen Pembimbing</h2>
+              <p className="mt-2 text-sm font-medium text-[#668176]">
+                Informasi singkat mengenai pengembang media E-CIBA.
+              </p>
             </div>
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#b56839]">Pembuat karya</p>
-            <h2 className="mt-2 text-2xl font-black text-[#17352e]">Media Literasi Sastra Digital SD</h2>
-            <p className="mt-3 text-sm font-medium leading-relaxed text-[#668176]">
-              Skripsi ini dikembangkan sebagai media literasi sastra digital berbentuk e-comic interaktif untuk siswa sekolah dasar.
-            </p>
+
+            <div className="mt-6 grid gap-5 md:grid-cols-2">
+              <article className="rounded-2xl border-2 border-[#d8864b]/40 bg-white p-5 shadow-sm">
+                <div className="mb-4 flex items-center gap-3">
+                  <img
+                    src={alifahPhoto}
+                    alt="Foto ALIFAH MUKAROMAH"
+                    className="h-16 w-16 shrink-0 rounded-full border-4 border-[#d8864b] object-cover shadow-[0_4px_0_#b56839]"
+                  />
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#b56839]">Penulis</p>
+                    <h3 className="mt-1 text-lg font-black leading-tight text-[#17352e]">ALIFAH MUKAROMAH</h3>
+                  </div>
+                </div>
+                <p className="text-sm font-medium leading-relaxed text-[#668176]">
+                  Lahir di Banjarnegara pada 10 Januari 2025, merupakan mahasiswa aktif Program Studi Pendidikan Guru Sekolah Dasar (PGSD), Fakultas Keguruan dan Ilmu Pendidikan (FKIP), Universitas Muhammadiyah Surakarta (UMS), yang mulai menempuh pendidikan pada tahun 2023. Aktif mengikuti berbagai kegiatan organisasi kemahasiswaan serta memiliki ketertarikan pada bidang riset dan pengembangan keilmiahan. Ketertarikan tersebut menjadi motivasi untuk terus mengembangkan wawasan, kreativitas, dan kemampuan akademik, khususnya dalam bidang pendidikan dasar. Melalui pengembangan media E-Comic Interaktif Berbasis Cerita Anak (E-CIBA), diharapkan dapat menghadirkan inovasi pembelajaran yang kreatif, interaktif, dan menarik guna mendukung peningkatan literasi sastra siswa sekolah dasar.
+                </p>
+              </article>
+
+              <article className="rounded-2xl border-2 border-[#b7cda9] bg-white p-5 shadow-sm">
+                <div className="mb-4 flex items-center gap-3">
+                  <img
+                    src={dosenPhoto}
+                    alt="Foto Dr. Fitri Puji Rahmawati"
+                    className="h-16 w-16 shrink-0 rounded-full border-4 border-[#b7cda9] object-cover shadow-[0_4px_0_#234638]"
+                  />
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#668176]">Dosen Pembimbing</p>
+                    <h3 className="mt-1 text-lg font-black leading-tight text-[#17352e]">Dr. Fitri Puji Rahmawati, S.Pd., M.Hum., M.Pd.</h3>
+                  </div>
+                </div>
+                <p className="text-sm font-medium leading-relaxed text-[#668176]">
+                  Lahir di Purwokerto pada tahun 1978. Saat ini, beliau beraktivitas sebagai dosen pada Program Studi Pendidikan Guru Sekolah Dasar (PGSD), Fakultas Keguruan dan Ilmu Pendidikan (FKIP), Universitas Muhammadiyah Surakarta (UMS). Pendidikan tinggi ditempuh secara berjenjang. Pendidikan sarjana (S1) diselesaikan pada Program Studi Pendidikan Bahasa, Sastra Indonesia dan Daerah, FKIP Universitas Muhammadiyah Surakarta, lulus pada tahun 2000. Selanjutnya, beliau melanjutkan pendidikan magister (S2) pada Program Studi Linguistik Deskriptif di Universitas Sebelas Maret (UNS) Surakarta dan berhasil menyelesaikannya pada tahun 2011. Untuk memperluas dan memperkuat keilmuan di bidang kependidikan, penulis kembali menempuh pendidikan magister (S2) pada Program Studi Administrasi Pendidikan Universitas Muhammadiyah Surakarta, yang diselesaikan pada tahun 2015. Pendidikan doktoral (S3) diselesaikan pada Program Studi Pendidikan Bahasa Indonesia Universitas Sebelas Maret Surakarta. Selain mengajar, beliau aktif melaksanakan kegiatan penelitian dan pengabdian kepada masyarakat. Berbagai artikel ilmiah telah dipublikasikan dalam jurnal nasional maupun internasional. Di samping itu, beliau juga menulis beberapa buku ajar dan referensi.
+                </p>
+              </article>
+            </div>
+
             <button
               onClick={() => setShowAuthorInfo(false)}
-              className="mt-5 rounded-xl bg-[#17352e] px-5 py-3 text-sm font-black text-white shadow-[0_4px_0_#0c211c] transition hover:bg-[#245243] active:translate-y-1 active:shadow-[0_1px_0_#0c211c]"
+              className="mx-auto mt-6 block rounded-xl bg-[#17352e] px-5 py-3 text-sm font-black text-white shadow-[0_4px_0_#0c211c] transition hover:bg-[#245243] active:translate-y-1 active:shadow-[0_1px_0_#0c211c]"
             >
-              Kembali ke halaman utama
+              Tutup informasi
             </button>
           </div>
         </div>
