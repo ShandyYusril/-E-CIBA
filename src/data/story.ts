@@ -1,4 +1,51 @@
 import type { LiteracyIndicatorType } from './indicators';
+import sceneOneArtwork from '../assets/comic/comic2/scene1/scene utama.png';
+import sceneOneTeacherTop from '../assets/comic/comic2/scene1/kiri atas.webp';
+import sceneOneStudentBottom from '../assets/comic/comic2/scene1/kiri bawah.webp';
+import sceneOneStudentTop from '../assets/comic/comic2/scene1/kanan atas.webp';
+import sceneOneTeacherBottom from '../assets/comic/comic2/scene1/kanan bawah.webp';
+import comic2Scene2Artwork from '../assets/comic/comic2/scene2/scene utama.webp';
+import comic2Scene2TopLeft from '../assets/comic/comic2/scene2/kiri bawah.webp';
+import comic2Scene2TopRight from '../assets/comic/comic2/scene2/kanan atas.webp';
+import comic2Scene2BottomRight from '../assets/comic/comic2/scene2/kanan bawah.webp';
+import comic2Scene2Extra from '../assets/comic/comic2/scene2/kanan atas lagi.webp';
+import comic2Scene3Artwork from '../assets/comic/comic2/scene3/scene utama.webp';
+import comic2Scene3TopRight from '../assets/comic/comic2/scene3/kanan atas.webp';
+import comic2Scene3BottomRight from '../assets/comic/comic2/scene3/kanan bawah.webp';
+import comic2Scene3BottomLeft from '../assets/comic/comic2/scene3/kiri bawah.webp';
+import comic2Scene4Artwork from '../assets/comic/comic2/scene4/scene utama.png';
+import comic2Scene4TopLeft from '../assets/comic/comic2/scene4/kiri atas.png';
+import comic2Scene4BottomLeft from '../assets/comic/comic2/scene4/kiri bawah.png';
+import comic2Scene4TopRight from '../assets/comic/comic2/scene4/kanan atas.png';
+import comic1Scene01 from '../assets/comic/comic1/scene-01.webp';
+import comic1Scene02 from '../assets/comic/comic1/scene-02.webp';
+import comic1Scene03 from '../assets/comic/comic1/scene-03.webp';
+import comic1Scene04 from '../assets/comic/comic1/scene-04.webp';
+import comic1Scene05 from '../assets/comic/comic1/scene-05.webp';
+import comic1Scene06 from '../assets/comic/comic1/scene-06.webp';
+import comic1Scene07 from '../assets/comic/comic1/scene-07.webp';
+import comic1Scene08 from '../assets/comic/comic1/scene-08.webp';
+import comic1Scene09 from '../assets/comic/comic1/scene-09.webp';
+import comic1Scene10 from '../assets/comic/comic1/scene-10.webp';
+import comic1Scene11 from '../assets/comic/comic1/scene-11.webp';
+import comic1Scene12 from '../assets/comic/comic1/scene-12.webp';
+import comic1Scene13 from '../assets/comic/comic1/scene-13.webp';
+import comic3Scene01 from '../assets/comic/comic3/scene-1.webp';
+import comic3Scene02 from '../assets/comic/comic3/scene-2.webp';
+import comic3Scene03 from '../assets/comic/comic3/scene-3.webp';
+import comic3Scene04 from '../assets/comic/comic3/scene-4.webp';
+import comic3Scene05 from '../assets/comic/comic3/scene-5.webp';
+import comic3Scene06 from '../assets/comic/comic3/scene-6.webp';
+import comic3Scene07 from '../assets/comic/comic3/scene-7.webp';
+import comic3Scene08 from '../assets/comic/comic3/scene-8.webp';
+import comic3Scene09 from '../assets/comic/comic3/scene-9.webp';
+import comic3Scene10 from '../assets/comic/comic3/scene-10.webp';
+import comic3Scene11 from '../assets/comic/comic3/scene-11.webp';
+import comic3Scene12 from '../assets/comic/comic3/scene-12.webp';
+import comic3Scene13 from '../assets/comic/comic3/scene-13.webp';
+import comic3Scene14 from '../assets/comic/comic3/scene-14.webp';
+import comic3Scene15 from '../assets/comic/comic3/scene-15.webp';
+import comic3Scene16 from '../assets/comic/comic3/scene-16.webp';
 
 export interface Hotspot {
   id: string;
@@ -8,6 +55,20 @@ export interface Hotspot {
   title: string;
   reaction: string;
   soundType: 'laugh' | 'pop' | 'chime' | 'splash' | 'cheer' | 'snore' | 'water';
+}
+
+export type DialoguePosition = 'left-top' | 'left-bottom' | 'right-top' | 'right-bottom';
+
+export interface InteractiveDialogue {
+  id: string;
+  label: string;
+  position: DialoguePosition;
+  image: string;
+  // Atur nilai ini jika balon dialog belum pas dengan panel gambar.
+  leftPercent: number;
+  topPercent: number;
+  widthPercent: number;
+  heightPercent: number;
 }
 
 export interface LiteracyOption {
@@ -52,6 +113,7 @@ export interface StoryScene {
     meaning: string;
   };
   hotspots?: Hotspot[];
+  interactiveDialogues?: InteractiveDialogue[];
   checkpoint?: LiteracyCheckpoint;
   nextSceneId: number | null;
 }
@@ -60,7 +122,7 @@ export interface ComicStory {
   id: string;
   title: string;
   subtitle: string;
-  genre: 'Fabel Hewan' | 'Dongeng Tradisional';
+  genre: 'Fabel Hewan' | 'Dongeng Tradisional' | 'Cerita Rakyat';
   author: string;
   targetClass: string;
   coverImage: string;
@@ -80,6 +142,36 @@ export interface ComicStory {
   scenes: StoryScene[];
 }
 
+const createInteractiveDialogues = (sceneId: string, images: string[]): InteractiveDialogue[] => {
+  const positions: DialoguePosition[] = ['left-top', 'left-bottom', 'right-top', 'right-bottom'];
+  return images.map((image, index) => ({
+    id: `${sceneId}-dialogue-${index + 1}`,
+    label: `Dialog scene ${sceneId} panel ${index + 1}`,
+    position: positions[index] || 'right-bottom',
+    image,
+    leftPercent: index % 2 === 0 ? 0 : 50,
+    topPercent: index < 2 ? 0 : 50,
+    widthPercent: 50,
+    heightPercent: 50
+  }));
+};
+
+const comic3Images = [
+  comic3Scene01, comic3Scene02, comic3Scene03, comic3Scene04,
+  comic3Scene05, comic3Scene06, comic3Scene07, comic3Scene08,
+  comic3Scene09, comic3Scene10, comic3Scene11, comic3Scene12,
+  comic3Scene13, comic3Scene14, comic3Scene15, comic3Scene16
+];
+
+const comic3Scenes: StoryScene[] = comic3Images.map((image, index) => ({
+  id: index + 1,
+  sceneNumber: index + 1,
+  title: `Legenda Naga dan Pahlawan - Halaman ${index + 1}`,
+  image,
+  narration: 'Baca setiap halaman untuk mengikuti kisah legenda dan menemukan pesan baik di dalamnya.',
+  nextSceneId: index < comic3Images.length - 1 ? index + 2 : null
+}));
+
 // -----------------------------------------------------------------------------
 // KOMIK 1: Kelinci dan Kura-Kura (Fabel - 13 Halaman)
 // -----------------------------------------------------------------------------
@@ -90,7 +182,7 @@ export const COMIC_1: ComicStory = {
   genre: 'Fabel Hewan',
   author: 'Media Literasi Sastra Digital SD',
   targetClass: 'Kelas IV SD / MI',
-  coverImage: '/assets/comic/scene-01.webp',
+  coverImage: comic1Scene01,
   description:
     'Kisah petualangan seru bersama Bu Meggy di Kelas IV, membahas fabel perlombaan lari antara Kelinci yang sombong dan Kura-kura yang sabar nan gigih, dipadukan dengan nilai luhur QS. Luqman: 18.',
   totalScenes: 13,
@@ -140,7 +232,7 @@ export const COMIC_1: ComicStory = {
       id: 1,
       sceneNumber: 1,
       title: 'Pengenalan Cerita Fabel di Kelas IV',
-      image: '/assets/comic/scene-01.webp',
+      image: comic1Scene01,
       speaker: 'Bu Meggy',
       speakerRole: 'teacher',
       dialogue:
@@ -223,7 +315,7 @@ export const COMIC_1: ComicStory = {
       id: 2,
       sceneNumber: 2,
       title: 'Mengenal Ciri dan Karakter Fabel',
-      image: '/assets/comic/scene-02.webp',
+      image: comic1Scene02,
       speaker: 'Bu Meggy',
       speakerRole: 'teacher',
       dialogue:
@@ -305,7 +397,7 @@ export const COMIC_1: ComicStory = {
       id: 3,
       sceneNumber: 3,
       title: 'Kesombongan Kelinci di Tepi Sungai',
-      image: '/assets/comic/scene-03.webp',
+      image: comic1Scene03,
       speaker: 'Kelinci',
       speakerRole: 'rabbit',
       dialogue: 'Lihatlah, teman-teman. Kakiku panjang. Aku bisa berlari cepat, tidak seperti kura-kura!',
@@ -386,7 +478,7 @@ export const COMIC_1: ComicStory = {
       id: 4,
       sceneNumber: 4,
       title: 'Tantangan Lomba Lari dari Kura-kura',
-      image: '/assets/comic/scene-04.webp',
+      image: comic1Scene04,
       speaker: 'Kura-kura',
       speakerRole: 'turtle',
       dialogue:
@@ -459,7 +551,7 @@ export const COMIC_1: ComicStory = {
       id: 5,
       sceneNumber: 5,
       title: 'Kesepakatan Bertanding Esok Hari',
-      image: '/assets/comic/scene-05.webp',
+      image: comic1Scene05,
       speaker: 'Kelinci',
       speakerRole: 'rabbit',
       dialogue:
@@ -532,7 +624,7 @@ export const COMIC_1: ComicStory = {
       id: 6,
       sceneNumber: 6,
       title: 'Rencana dan Strategi Kura-kura di Malam Hari',
-      image: '/assets/comic/scene-06.webp',
+      image: comic1Scene06,
       speaker: 'Kura-kura',
       speakerRole: 'turtle',
       dialogue:
@@ -605,7 +697,7 @@ export const COMIC_1: ComicStory = {
       id: 7,
       sceneNumber: 7,
       title: 'Kesiapan di Garis Start',
-      image: '/assets/comic/scene-07.webp',
+      image: comic1Scene07,
       speaker: 'Kelinci',
       speakerRole: 'rabbit',
       dialogue: 'Aku yang akan menang, kura-kura! Kecepatanku tak terkalahkan!',
@@ -677,7 +769,7 @@ export const COMIC_1: ComicStory = {
       id: 8,
       sceneNumber: 8,
       title: 'Perlombaan Dimulai dan Kegigihan Kura-kura',
-      image: '/assets/comic/scene-08.webp',
+      image: comic1Scene08,
       speaker: 'Kura-kura',
       speakerRole: 'turtle',
       dialogue: 'Aku pasti bisa! Kura-kura pantang menyerah, aku akan terus berusaha mengejar kelinci!',
@@ -749,7 +841,7 @@ export const COMIC_1: ComicStory = {
       id: 9,
       sceneNumber: 9,
       title: 'Kelinci Terlena di Kebun Wortel',
-      image: '/assets/comic/scene-09.webp',
+      image: comic1Scene09,
       speaker: 'Kelinci',
       speakerRole: 'rabbit',
       dialogue: 'Kura-kura masih jauh di belakang. Aku santai dulu ah... Hmm, wortelnya enak sekali!',
@@ -821,7 +913,7 @@ export const COMIC_1: ComicStory = {
       id: 10,
       sceneNumber: 10,
       title: 'Kura-kura Menembus Garis Akhir dan Penyesalan Kelinci',
-      image: '/assets/comic/scene-10.webp',
+      image: comic1Scene10,
       speaker: 'Kura-kura',
       speakerRole: 'turtle',
       dialogue:
@@ -894,7 +986,7 @@ export const COMIC_1: ComicStory = {
       id: 11,
       sceneNumber: 11,
       title: 'Refleksi Cerita di Ruang Kelas IV',
-      image: '/assets/comic/scene-11.webp',
+      image: comic1Scene11,
       speaker: 'Bu Meggy',
       speakerRole: 'teacher',
       dialogue:
@@ -967,7 +1059,7 @@ export const COMIC_1: ComicStory = {
       id: 12,
       sceneNumber: 12,
       title: 'Meneladani Nilai Karakter Islami (QS. Luqman: 18)',
-      image: '/assets/comic/scene-12.webp',
+      image: comic1Scene12,
       speaker: 'Bu Meggy',
       speakerRole: 'teacher',
       dialogue:
@@ -1049,7 +1141,7 @@ export const COMIC_1: ComicStory = {
       id: 13,
       sceneNumber: 13,
       title: 'Hikmah dan Kesimpulan Pembelajaran Fabel',
-      image: '/assets/comic/scene-13.webp',
+      image: comic1Scene13,
       speaker: 'Bu Meggy',
       speakerRole: 'teacher',
       dialogue:
@@ -1133,7 +1225,7 @@ export const COMIC_2: ComicStory = {
   genre: 'Dongeng Tradisional',
   author: 'Media Literasi Sastra Digital SD',
   targetClass: 'Kelas IV SD / MI',
-  coverImage: '/assets/comic2/scene-01.webp',
+  coverImage: sceneOneArtwork,
   description:
     'Kisah legenda tradisional Jawa Tengah tentang keberanian Timun Mas, kasih sayang Mbok Srini, dan ikhtiar pantang menyerah menghadapi Buto Ijo, disempurnakan dengan nilai kemudahan sesudah kesulitan dalam QS. Al-Insyirah: 5-6.',
   totalScenes: 11,
@@ -1183,7 +1275,7 @@ export const COMIC_2: ComicStory = {
       id: 1,
       sceneNumber: 1,
       title: 'Mengenal Cerita Dongeng di Kelas IV',
-      image: '/assets/comic2/scene-01.webp',
+      image: sceneOneArtwork,
       speaker: 'Bu Meggy',
       speakerRole: 'teacher',
       dialogue:
@@ -1191,6 +1283,48 @@ export const COMIC_2: ComicStory = {
       narration:
         'Di ruang kelas IV, Bu Meggy mengajak siswa berdiskusi tentang arti dan keistimewaan cerita dongeng warisan nusantara.',
       audio: '/assets/audio/comic2-scene-01.mp3',
+      interactiveDialogues: [
+        {
+          id: 'c2-scene1-teacher-top',
+          label: 'Dialog Ibu Guru kiri atas',
+          position: 'left-top',
+          image: sceneOneTeacherTop,
+          leftPercent: 0,
+          topPercent: 0,
+          widthPercent: 50,
+          heightPercent: 50
+        },
+        {
+          id: 'c2-scene1-student-bottom',
+          label: 'Dialog Murid kiri bawah',
+          position: 'left-bottom',
+          image: sceneOneStudentBottom,
+          leftPercent: 0,
+          topPercent: 50,
+          widthPercent: 50,
+          heightPercent: 50
+        },
+        {
+          id: 'c2-scene1-student-top',
+          label: 'Dialog Murid kanan atas',
+          position: 'right-top',
+          image: sceneOneStudentTop,
+          leftPercent: 50,
+          topPercent: 0,
+          widthPercent: 50,
+          heightPercent: 50
+        },
+        {
+          id: 'c2-scene1-teacher-bottom',
+          label: 'Dialog Ibu Guru kanan bawah',
+          position: 'right-bottom',
+          image: sceneOneTeacherBottom,
+          leftPercent: 50,
+          topPercent: 50,
+          widthPercent: 50,
+          heightPercent: 50
+        }
+      ],
       hotspots: [
         {
           id: 'spot-c2-teacher-1',
@@ -1267,7 +1401,7 @@ export const COMIC_2: ComicStory = {
       id: 2,
       sceneNumber: 2,
       title: 'Pengenalan Kisah Timun Mas dari Jawa Tengah',
-      image: '/assets/comic2/scene-02.webp',
+      image: comic2Scene2Artwork,
       speaker: 'Bu Meggy',
       speakerRole: 'teacher',
       dialogue:
@@ -1275,6 +1409,12 @@ export const COMIC_2: ComicStory = {
       narration:
         'Bu Meggy menunjukkan buku dongeng Timun Mas yang bergambar gadis pemberani dan raksasa hijau kepada seluruh murid.',
       audio: '/assets/audio/comic2-scene-02.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene2', [
+        comic2Scene2TopLeft,
+        comic2Scene2TopRight,
+        comic2Scene2BottomRight,
+        comic2Scene2Extra
+      ]),
       hotspots: [
         {
           id: 'spot-c2-book-2',
@@ -1339,7 +1479,7 @@ export const COMIC_2: ComicStory = {
       id: 3,
       sceneNumber: 3,
       title: 'Doa Mbok Srini dan Kemunculan Buto Ijo',
-      image: '/assets/comic2/scene-03.webp',
+      image: comic2Scene3Artwork,
       speaker: 'Buto Ijo',
       speakerRole: 'buto-ijo',
       dialogue:
@@ -1347,6 +1487,11 @@ export const COMIC_2: ComicStory = {
       narration:
         'Dahulu kala di desa terpencil, hiduplah Mbok Srini yang sebatang kara dan sangat mendambakan anak. Tiba-tiba pusaran angin kencang membawa raksasa Buto Ijo.',
       audio: '/assets/audio/comic2-scene-03.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene3', [
+        comic2Scene3TopRight,
+        comic2Scene3BottomRight,
+        comic2Scene3BottomLeft
+      ]),
       hotspots: [
         {
           id: 'spot-c2-mbok-3',
@@ -1421,7 +1566,7 @@ export const COMIC_2: ComicStory = {
       id: 4,
       sceneNumber: 4,
       title: 'Perjanjian Biji Mentimun Emas',
-      image: '/assets/comic2/scene-04.webp',
+      image: comic2Scene4Artwork,
       speaker: 'Buto Ijo',
       speakerRole: 'buto-ijo',
       dialogue:
@@ -1429,6 +1574,11 @@ export const COMIC_2: ComicStory = {
       narration:
         'Karena sangat ingin memiliki anak, Mbok Srini menyetujui syarat berat Buto Ijo dan menerima biji mentimun emas yang bersinar.',
       audio: '/assets/audio/comic2-scene-04.mp3',
+      interactiveDialogues: createInteractiveDialogues('c2-scene4', [
+        comic2Scene4TopLeft,
+        comic2Scene4BottomLeft,
+        comic2Scene4TopRight
+      ]),
       hotspots: [
         {
           id: 'spot-c2-seed-4',
@@ -2033,10 +2183,29 @@ export const COMIC_2: ComicStory = {
   ]
 };
 
+export const COMIC_3: ComicStory = {
+  id: 'comic-3',
+  title: 'Legenda Naga dan Pahlawan',
+  subtitle: 'Cerita Rakyat Nusantara dan Pesan Kebaikan',
+  genre: 'Cerita Rakyat',
+  author: 'Media Literasi Sastra Digital SD',
+  targetClass: 'Kelas IV SD / MI',
+  coverImage: comic3Images[0],
+  description: 'Ikuti kisah legenda bergambar dari halaman pertama hingga akhir dan temukan pesan baik di dalamnya.',
+  totalScenes: comic3Scenes.length,
+  accentColor: '#2563EB',
+  gradientFrom: '#1D4ED8',
+  gradientTo: '#172554',
+  quranFocus: 'Pesan kebaikan, keberanian, dan tanggung jawab',
+  characters: [],
+  scenes: comic3Scenes
+};
+
 // Map semua komik yang tersedia
 export const ALL_COMIC_STORIES: Record<string, ComicStory> = {
   'comic-1': COMIC_1,
-  'comic-2': COMIC_2
+  'comic-2': COMIC_2,
+  'comic-3': COMIC_3
 };
 
 // Default export untuk kompatibilitas mundur

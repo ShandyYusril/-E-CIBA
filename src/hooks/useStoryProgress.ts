@@ -58,7 +58,8 @@ export function useStoryProgress() {
           activeStoryId: parsed.activeStoryId || 'comic-1',
           stories: {
             'comic-1': parsed.stories?.['comic-1'] || { ...defaultStoryProgress },
-            'comic-2': parsed.stories?.['comic-2'] || { ...defaultStoryProgress }
+            'comic-2': parsed.stories?.['comic-2'] || { ...defaultStoryProgress },
+            'comic-3': parsed.stories?.['comic-3'] || { ...defaultStoryProgress }
           }
         };
       }
@@ -95,7 +96,7 @@ export function useStoryProgress() {
     }
   }, [currentStory.scenes, currentSceneIndex]);
 
-  // Ganti cerita komik (Komik 1 <-> Komik 2)
+  // Ganti cerita komik
   const selectStory = useCallback((storyId: string) => {
     if (!ALL_COMIC_STORIES[storyId]) return;
     setAppState((prev) => ({

@@ -15,6 +15,7 @@ export function App() {
 
   const {
     currentStory,
+    selectStory,
     currentScene,
     currentSceneIndex,
     totalScenes,
@@ -58,8 +59,9 @@ export function App() {
   };
 
   // Handler: Mulai Petualangan Baru
-  const handleStartAdventure = () => {
+  const handleStartAdventure = (comicId = 'comic-1') => {
     soundEffects.pop();
+    selectStory(comicId);
     // Coba masuk fullscreen dengan user gesture
     enterFullscreen();
     setScreenState('story');
