@@ -198,7 +198,7 @@ const comic3Images = [
 const comic3Scenes: StoryScene[] = comic3Images.map((image, index) => ({
   id: index + 1,
   sceneNumber: index + 1,
-  title: `Legenda Naga dan Pahlawan - Halaman ${index + 1}`,
+  title: `Legenda Malin Kundang - Halaman ${index + 1}`,
   image,
   narration: 'Baca setiap halaman untuk mengikuti kisah legenda dan menemukan pesan baik di dalamnya.',
   nextSceneId: index < comic3Images.length - 1 ? index + 2 : null
@@ -2256,7 +2256,7 @@ export const COMIC_2: ComicStory = {
 
 export const COMIC_3: ComicStory = {
   id: 'comic-3',
-  title: 'Legenda Naga dan Pahlawan',
+  title: 'Legenda Malin Kundang',
   subtitle: 'Cerita Rakyat Nusantara dan Pesan Kebaikan',
   genre: 'Cerita Rakyat',
   author: 'Media Literasi Sastra Digital SD',

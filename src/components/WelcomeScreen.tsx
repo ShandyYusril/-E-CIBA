@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, HelpCircle, Info, Play, RotateCcw, X } from 'lucide-react';
 import { FullscreenButton } from './FullscreenButton';
 import backgroundImage from '../assets/background/backgorund.webp';
-import logoImage from '../assets/background/logo.webp';
+import logoImage from '../assets/background/logo.jpeg';
 import comic1Cover from '../assets/comic/comic1/scene-01.webp';
 import comic2Cover from '../assets/comic/comic2/scene1/scene utama.png';
 import comic3Cover from '../assets/comic/comic3/scene-1.webp';
@@ -50,7 +50,7 @@ const comicOptions: ComicOption[] = [
   {
     id: 'comic-3',
     number: 'Komik 03',
-    title: 'Legenda Naga dan Pahlawan',
+    title: 'Legenda Malin Kundang',
     genre: 'Cerita Rakyat',
     description: 'Cerita pilihan berikutnya dengan pesan baik untuk pembaca cilik.',
     cover: comic3Cover,
@@ -104,19 +104,21 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowGuide(true)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#b9c9ba] bg-white/75 text-[#17352e] shadow-[0_3px_0_#d7d2c7] transition hover:-translate-y-0.5 hover:bg-white active:translate-y-0"
+            className="flex h-10 items-center gap-2 rounded-full border border-[#b9c9ba] bg-white/75 px-3 text-[#17352e] shadow-[0_3px_0_#d7d2c7] transition hover:-translate-y-0.5 hover:bg-white active:translate-y-0"
             title="Petunjuk ECIBA"
             aria-label="Buka petunjuk ECIBA"
           >
             <HelpCircle className="h-5 w-5" />
+            <span className="text-[10px] font-bold sm:text-xs">Petunjuk Penggunaan</span>
           </button>
           <button
             onClick={() => setShowAuthorInfo(true)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#b9c9ba] bg-white/75 text-[#17352e] shadow-[0_3px_0_#d7d2c7] transition hover:-translate-y-0.5 hover:bg-white active:translate-y-0"
+            className="flex h-10 items-center gap-2 rounded-full border border-[#b9c9ba] bg-white/75 px-3 text-[#17352e] shadow-[0_3px_0_#d7d2c7] transition hover:-translate-y-0.5 hover:bg-white active:translate-y-0"
             title="Tentang karya"
             aria-label="Buka informasi pembuat karya"
           >
             <Info className="h-5 w-5" />
+            <span className="text-[10px] font-bold sm:text-xs">Penyusun Produk</span>
           </button>
           <FullscreenButton isFullscreen={isFullscreen} onToggle={onToggleFullscreen} />
         </div>
@@ -276,7 +278,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
       {showGuide && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17352e]/65 p-4 backdrop-blur-sm animate-pop-in">
-          <div className="relative w-full max-w-sm rounded-3xl border border-white/60 bg-[#f8f5ed] p-6 shadow-2xl">
+          <div className="relative max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/60 bg-[#f8f5ed] p-6 shadow-2xl sm:p-8">
             <button
               onClick={() => setShowGuide(false)}
               className="absolute right-4 top-4 rounded-full p-2 text-[#668176] transition hover:bg-[#e8e1d3] hover:text-[#17352e]"
@@ -287,12 +289,32 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border-4 border-[#b7cda9] bg-[#17352e] text-white shadow-[0_4px_0_#0c211c]">
               <HelpCircle className="h-8 w-8" />
             </div>
-            <h2 className="text-center text-2xl font-black text-[#17352e]">Petunjuk ECIBA</h2>
-            <div className="mt-5 grid gap-3 text-sm text-[#668176]">
-              <GuideItem number="01" text="Geser halaman untuk mengikuti alur cerita." />
-              <GuideItem number="02" text="Sentuh titik interaktif yang kamu temukan." />
-              <GuideItem number="03" text="Selesaikan kuis setelah halaman terakhir." />
+            <h2 className="text-center text-2xl font-black text-[#17352e]">Petunjuk Penggunaan Media E-CIBA</h2>
+            <div className="mt-6 grid gap-4 text-sm text-[#668176]">
+              <GuideItem
+                number="01"
+                title="Pilih Cerita yang Akan Dibaca"
+                text="Klik menu Mulai Membaca pada halaman utama media E-CIBA untuk memulai petualangan membaca cerita anak."
+              />
+              <GuideItem
+                number="02"
+                title="Pilih Salah Satu Cerita"
+                text="Setelah masuk ke menu cerita, pilihlah salah satu dari tiga cerita yang tersedia, yaitu fabel, dongeng atau legenda. Setiap cerita memiliki kisah menarik dan pesan moral yang dapat kamu pelajari."
+              />
+              <GuideItem
+                number="03"
+                title="Bacalah Cerita dengan Saksama"
+                text="Bacalah setiap halaman cerita dengan teliti. Perhatikan gambar, tokoh, alur cerita, dan pesan baik yang disampaikan. Gunakan tombol Lanjut untuk membaca halaman berikutnya dan tombol Kembali jika ingin mengulang halaman sebelumnya."
+              />
+              <GuideItem
+                number="04"
+                title="Kerjakan Kuis Online"
+                text="Setelah selesai membaca cerita, lanjutkan kegiatan dengan mengerjakan kuis online yang tersedia. Bacalah setiap pertanyaan dengan cermat, kemudian pilih atau tuliskan jawaban yang paling tepat sesuai pemahamanmu terhadap cerita."
+              />
             </div>
+            <p className="mt-6 rounded-2xl bg-[#e9f1e5] p-4 text-center text-sm font-bold leading-relaxed text-[#315d4d]">
+              Selamat membaca dan belajar bersama E-CIBA! Temukan keseruan cerita dan jadilah pembaca cilik yang hebat! 🌟
+            </p>
             <button
               onClick={() => setShowGuide(false)}
               className="mt-6 w-full rounded-xl bg-[#17352e] px-5 py-3 text-sm font-black text-white shadow-[0_4px_0_#0c211c] transition hover:bg-[#245243] active:translate-y-1 active:shadow-[0_1px_0_#0c211c]"
@@ -371,11 +393,14 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   );
 };
 
-function GuideItem({ number, text }: { number: string; text: string }) {
+function GuideItem({ number, title, text }: { number: string; title: string; text: string }) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="font-black text-[#d2773e]">{number}</span>
-      <span className="font-semibold">{text}</span>
+    <div className="flex items-start gap-3 rounded-2xl border border-[#d7d2c7] bg-white/70 p-4">
+      <span className="shrink-0 font-black text-[#d2773e]">{number}</span>
+      <div>
+        <h3 className="font-black text-[#17352e]">{title}</h3>
+        <p className="mt-1 font-semibold leading-relaxed">{text}</p>
+      </div>
     </div>
   );
 }
