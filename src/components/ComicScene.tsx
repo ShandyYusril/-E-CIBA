@@ -72,9 +72,13 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
   const activeDialogues = dialogues.filter((dialogue) => activeDialogueIds.includes(dialogue.id));
 
   useEffect(() => {
-    dialogues.forEach((dialogue) => {
-      if (dialogue.image) void getCroppedDialogueImage(dialogue.image);
-    });
+    const preloadTimer = window.setTimeout(() => {
+      dialogues.forEach((dialogue) => {
+        if (dialogue.image) void getCroppedDialogueImage(dialogue.image);
+      });
+    }, 250);
+
+    return () => window.clearTimeout(preloadTimer);
   }, [dialogues]);
 
   const openDialogue = (dialogueId: string) => {
@@ -122,7 +126,7 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
         })}
 
         {activeDialogues.map((dialogue, index) =>
-          dialogue.image ? (
+          dialogue.image || dialogue.text ? (
             <div
               key={dialogue.id}
               className="pointer-events-none absolute overflow-hidden animate-pop-in"
@@ -134,7 +138,13 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
                 zIndex: 30 + index
               }}
             >
-              <CroppedDialogueImage image={dialogue.image} label={dialogue.label} />
+              {dialogue.image ? (
+                <CroppedDialogueImage image={dialogue.image} label={dialogue.label} />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center rounded-2xl border-2 border-slate-700 bg-white px-4 text-center text-[clamp(8px,1.2vw,18px)] font-semibold leading-tight text-slate-900 shadow-md">
+                  {dialogue.text}
+                </div>
+              )}
             </div>
           ) : null
         )}
@@ -211,8 +221,10 @@ const getCroppedDialogueImage = (image: string): Promise<string> => {
       let maxX = -1;
       let maxY = -1;
 
-      for (let y = 0; y < canvas.height; y += 1) {
-        for (let x = 0; x < canvas.width; x += 1) {
+      // Sample every few pixels; the transparent margin is large and does not
+      // need a full-resolution scan to find the dialog bounds.
+      for (let y = 0; y < canvas.height; y += 4) {
+        for (let x = 0; x < canvas.width; x += 4) {
           if (pixels[(y * canvas.width + x) * 4 + 3] > 10) {
             minX = Math.min(minX, x);
             minY = Math.min(minY, y);
@@ -243,7 +255,7 @@ const getCroppedDialogueImage = (image: string): Promise<string> => {
           croppedCanvas.width,
           croppedCanvas.height
         );
-      resolve(croppedCanvas.toDataURL('image/png'));
+      resolve(croppedCanvas.toDataURL('image/webp', 0.92));
     };
     source.src = image;
   });

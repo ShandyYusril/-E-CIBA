@@ -6,9 +6,9 @@ import sceneOneStudentTop from '../assets/comic/comic2/scene1/kanan atas.webp';
 import sceneOneTeacherBottom from '../assets/comic/comic2/scene1/kanan bawah.webp';
 import comic2Scene2Artwork from '../assets/comic/comic2/scene2/scene utama.webp';
 import comic2Scene2TopLeft from '../assets/comic/comic2/scene2/kiri bawah.webp';
-import comic2Scene2TopRight from '../assets/comic/comic2/scene2/kanan atas.webp';
-import comic2Scene2BottomRight from '../assets/comic/comic2/scene2/kanan bawah.webp';
-import comic2Scene2Extra from '../assets/comic/comic2/scene2/kanan atas lagi.webp';
+import comic2Scene2TopRight from '../assets/comic/comic2/scene2/kanan atas yang cowo.webp';
+import comic2Scene2BottomRight from '../assets/comic/comic2/scene2/kanan atas yang cewe.webp';
+import comic2Scene2Extra from '../assets/comic/comic2/scene2/kanan bawah.webp';
 import comic2Scene3Artwork from '../assets/comic/comic2/scene3/scene utama.webp';
 import comic2Scene3TopRight from '../assets/comic/comic2/scene3/kanan atas.webp';
 import comic2Scene3BottomRight from '../assets/comic/comic2/scene3/kanan bawah.webp';
@@ -96,6 +96,7 @@ export interface InteractiveDialogue {
   label: string;
   position: DialoguePosition;
   image?: string;
+  text?: string;
   // Atur nilai ini jika balon dialog belum pas dengan panel gambar.
   leftPercent: number;
   topPercent: number;
@@ -178,43 +179,43 @@ const createInteractiveDialogues = (sceneId: string, images: string[]): Interact
   const positions: DialoguePosition[] = ['left-top', 'left-bottom', 'right-top', 'right-middle', 'right-bottom'];
   const coordinates: Record<string, [number, number, number, number][]> = {
     'c2-scene5': [
-      [7, 2, 25, 24],
-      [5, 73, 17, 19],
-      [72, 1, 20, 22],
-      [51, 42, 20, 16],
-      [71, 73, 23, 20]
+      [7, 2, 26, 26],
+      [5, 72, 18, 22],
+      [71, 1, 22, 24],
+      [50, 41, 22, 19],
+      [70, 72, 25, 24]
     ],
     'c2-scene6': [
-      [16, 2, 22, 22],
-      [68, 5, 25, 23]
+      [16, 1, 23, 25],
+      [68, 4, 27, 25]
     ],
     'c2-scene7': [
-      [2, 47, 18, 18],
-      [60, 30, 20, 21],
-      [33, 1, 25, 23],
-      [39, 52, 21, 28]
+      [2, 46, 20, 21],
+      [59, 30, 22, 23],
+      [33, 0, 27, 27],
+      [38, 51, 24, 31]
     ],
     'c2-scene8': [
-      [17, 1, 25, 24],
-      [2, 42, 20, 21],
-      [73, 4, 24, 24],
-      [49, 72, 25, 23]
+      [17, 0, 27, 27],
+      [2, 41, 22, 24],
+      [72, 3, 26, 27],
+      [48, 70, 28, 27]
     ],
     'c2-scene9': [
-      [4, 17, 27, 25],
-      [28, 41, 18, 19],
-      [73, 2, 23, 23]
+      [4, 16, 29, 28],
+      [27, 40, 21, 22],
+      [72, 1, 25, 26]
     ],
     'c2-scene10': [
-      [27, 0, 27, 25],
-      [17, 72, 24, 20],
-      [57, 0, 28, 25],
-      [56, 49, 26, 38]
+      [26, 0, 29, 28],
+      [17, 70, 26, 24],
+      [56, 0, 30, 28],
+      [55, 47, 29, 42]
     ],
     'c2-scene11': [
-      [2, 4, 23, 19],
-      [23, 42, 21, 20],
-      [68, 75, 25, 22]
+      [1, 3, 25, 22],
+      [22, 41, 23, 23],
+      [67, 73, 28, 25]
     ]
   };
 
@@ -1602,6 +1603,7 @@ export const COMIC_2: ComicStory = {
           id: 'c2-scene3-narration-top-left',
           label: 'Narasi kiri atas',
           position: 'left-top',
+          text: 'Dahulu kala, di sebuah desa terpencil hiduplah seorang bernama Mbok Srini. Ia hidup sebatang kara dan sangat menginginkan seorang anak untuk menemaninya.',
           leftPercent: 1,
           topPercent: 13,
           widthPercent: 58,
@@ -1726,30 +1728,30 @@ export const COMIC_2: ComicStory = {
           label: 'Dialog Buto Ijo kiri atas',
           position: 'left-top',
           image: comic2Scene4TopLeft,
-          leftPercent: 3,
-          topPercent: 2,
-          widthPercent: 20,
-          heightPercent: 22
+          leftPercent: 2,
+          topPercent: 1,
+          widthPercent: 22,
+          heightPercent: 25
         },
         {
           id: 'c2-scene4-dialogue-2',
           label: 'Dialog Mbok Srini kiri bawah',
           position: 'left-bottom',
           image: comic2Scene4BottomLeft,
-          leftPercent: 3,
-          topPercent: 47,
-          widthPercent: 22,
-          heightPercent: 20
+          leftPercent: 2,
+          topPercent: 46,
+          widthPercent: 24,
+          heightPercent: 22
         },
         {
           id: 'c2-scene4-dialogue-3',
           label: 'Dialog Buto Ijo kanan atas',
           position: 'right-top',
           image: comic2Scene4TopRight,
-          leftPercent: 71,
-          topPercent: 4,
-          widthPercent: 25,
-          heightPercent: 23
+          leftPercent: 70,
+          topPercent: 3,
+          widthPercent: 27,
+          heightPercent: 25
         }
       ],
       hotspots: [
