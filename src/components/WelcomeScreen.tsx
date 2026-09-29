@@ -33,7 +33,7 @@ const comicOptions: ComicOption[] = [
     id: 'comic-1',
     number: 'Komik 01',
     title: 'Cerita Fabel "Kura-Kura dan Kelinci yang Sombong"',
-    genre: 'Fabel',
+    genre: 'Cerita Fabel',
     description: 'Fabel tentang ketekunan, kerendahan hati dan tidak meremehkan teman.',
     cover: comic1Cover,
     available: true
@@ -42,7 +42,7 @@ const comicOptions: ComicOption[] = [
     id: 'comic-2',
     number: 'Komik 02',
     title: 'Cerita Dongeng "Timun Mas"',
-    genre: 'Dongeng',
+    genre: 'Cerita Dongeng',
     description: 'Dongeng tentang keberanian, kasih sayang dan pantang menyerah.',
     cover: comic2Cover,
     available: true
@@ -51,7 +51,7 @@ const comicOptions: ComicOption[] = [
     id: 'comic-3',
     number: 'Komik 03',
     title: 'Cerita Legenda "Malin Kundang"',
-    genre: 'Cerita Rakyat',
+    genre: 'Cerita Legenda',
     description: 'Cerita pilihan berikutnya dengan pesan baik untuk pembaca cilik.',
     cover: comic3Cover,
     available: true

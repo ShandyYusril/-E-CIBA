@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import type { StoryScene, InteractiveDialogue } from '../data/story';
 import { useComicImage } from '../hooks/useComicImage';
@@ -71,6 +71,12 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
   const dialogues = scene.interactiveDialogues as InteractiveDialogue[];
   const activeDialogues = dialogues.filter((dialogue) => activeDialogueIds.includes(dialogue.id));
 
+  useEffect(() => {
+    dialogues.forEach((dialogue) => {
+      if (dialogue.image) void getCroppedDialogueImage(dialogue.image);
+    });
+  }, [dialogues]);
+
   const openDialogue = (dialogueId: string) => {
     setActiveDialogueIds((currentIds) =>
       currentIds.includes(dialogueId) ? currentIds : [...currentIds, dialogueId]
@@ -128,12 +134,7 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
                 zIndex: 30 + index
               }}
             >
-              <img
-                src={dialogue.image}
-                alt={dialogue.label}
-                className="absolute inset-0 h-full w-full scale-[2.5] object-contain"
-                draggable={false}
-              />
+              <CroppedDialogueImage image={dialogue.image} label={dialogue.label} />
             </div>
           ) : null
         )}
@@ -158,4 +159,95 @@ const InteractiveComicArtwork: React.FC<InteractiveComicArtworkProps> = ({ scene
       </div>
     </div>
   );
+};
+
+interface CroppedDialogueImageProps {
+  image: string;
+  label: string;
+}
+
+const CroppedDialogueImage: React.FC<CroppedDialogueImageProps> = ({ image, label }) => {
+  const [croppedImage, setCroppedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    getCroppedDialogueImage(image).then(setCroppedImage);
+  }, [image]);
+
+  if (!croppedImage) return null;
+
+  return (
+    <img
+      src={croppedImage}
+      alt={label}
+      className="absolute inset-0 h-full w-full object-contain"
+      draggable={false}
+    />
+  );
+};
+
+const croppedDialogueCache = new Map<string, Promise<string>>();
+
+const getCroppedDialogueImage = (image: string): Promise<string> => {
+  const cachedImage = croppedDialogueCache.get(image);
+  if (cachedImage) return cachedImage;
+
+  const croppedImage = new Promise<string>((resolve) => {
+    const source = new Image();
+    source.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = source.naturalWidth;
+      canvas.height = source.naturalHeight;
+      const context = canvas.getContext('2d');
+
+      if (!context) {
+        resolve(image);
+        return;
+      }
+
+      context.drawImage(source, 0, 0);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let minX = canvas.width;
+      let minY = canvas.height;
+      let maxX = -1;
+      let maxY = -1;
+
+      for (let y = 0; y < canvas.height; y += 1) {
+        for (let x = 0; x < canvas.width; x += 1) {
+          if (pixels[(y * canvas.width + x) * 4 + 3] > 10) {
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+          }
+        }
+      }
+
+      if (maxX < 0 || maxY < 0) {
+        resolve(image);
+        return;
+      }
+
+      const croppedCanvas = document.createElement('canvas');
+      croppedCanvas.width = maxX - minX + 1;
+      croppedCanvas.height = maxY - minY + 1;
+      croppedCanvas
+        .getContext('2d')
+        ?.drawImage(
+          canvas,
+          minX,
+          minY,
+          croppedCanvas.width,
+          croppedCanvas.height,
+          0,
+          0,
+          croppedCanvas.width,
+          croppedCanvas.height
+        );
+      resolve(croppedCanvas.toDataURL('image/png'));
+    };
+    source.src = image;
+  });
+
+  croppedDialogueCache.set(image, croppedImage);
+  return croppedImage;
 };

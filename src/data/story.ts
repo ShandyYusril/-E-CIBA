@@ -176,15 +176,57 @@ export interface ComicStory {
 
 const createInteractiveDialogues = (sceneId: string, images: string[]): InteractiveDialogue[] => {
   const positions: DialoguePosition[] = ['left-top', 'left-bottom', 'right-top', 'right-middle', 'right-bottom'];
+  const coordinates: Record<string, [number, number, number, number][]> = {
+    'c2-scene5': [
+      [7, 2, 25, 24],
+      [5, 73, 17, 19],
+      [72, 1, 20, 22],
+      [51, 42, 20, 16],
+      [71, 73, 23, 20]
+    ],
+    'c2-scene6': [
+      [16, 2, 22, 22],
+      [68, 5, 25, 23]
+    ],
+    'c2-scene7': [
+      [2, 47, 18, 18],
+      [60, 30, 20, 21],
+      [33, 1, 25, 23],
+      [39, 52, 21, 28]
+    ],
+    'c2-scene8': [
+      [17, 1, 25, 24],
+      [2, 42, 20, 21],
+      [73, 4, 24, 24],
+      [49, 72, 25, 23]
+    ],
+    'c2-scene9': [
+      [4, 17, 27, 25],
+      [28, 41, 18, 19],
+      [73, 2, 23, 23]
+    ],
+    'c2-scene10': [
+      [27, 0, 27, 25],
+      [17, 72, 24, 20],
+      [57, 0, 28, 25],
+      [56, 49, 26, 38]
+    ],
+    'c2-scene11': [
+      [2, 4, 23, 19],
+      [23, 42, 21, 20],
+      [68, 75, 25, 22]
+    ]
+  };
+
   return images.map((image, index) => ({
     id: `${sceneId}-dialogue-${index + 1}`,
     label: `Dialog scene ${sceneId} panel ${index + 1}`,
     position: positions[index] || 'right-bottom',
     image,
-    leftPercent: index < 2 ? 0 : 50,
-    topPercent: index === 1 ? 50 : index === 3 ? 25 : index === 4 ? 50 : 0,
-    widthPercent: 50,
-    heightPercent: index === 3 ? 25 : 50
+    leftPercent: coordinates[sceneId]?.[index]?.[0] ?? (index < 2 ? 0 : 50),
+    topPercent: coordinates[sceneId]?.[index]?.[1] ?? (index === 1 ? 50 : index === 3 ? 25 : index === 4 ? 50 : 0),
+    widthPercent: coordinates[sceneId]?.[index]?.[2] ?? 50,
+    heightPercent: coordinates[sceneId]?.[index]?.[3] ?? (index === 3 ? 25 : 50)
   }));
 };
 

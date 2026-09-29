@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import logoImage from '../assets/background/logo.jpeg';
 
 interface LoadingScreenProps {
   onLoaded: () => void;
@@ -30,11 +31,9 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoaded }) => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px]" />
 
       <div className="relative z-10 flex flex-col items-center w-full max-w-xs px-6">
-        {/* Book icon */}
-        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
-            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
-          </svg>
+        {/* Logo */}
+        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 overflow-hidden">
+          <img src={logoImage} alt="Logo E-CIBA" className="h-full w-full object-cover" />
         </div>
 
         {/* Title */}
